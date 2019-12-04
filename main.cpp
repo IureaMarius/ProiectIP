@@ -15,10 +15,27 @@ bool checkPointBounds(Point A)
         return true;
     return false;
 }
+
+void sortMoveByValue(int values[4])
+{
+    int aux;
+for(int i=0;i<4;i++)
+    for(int j=i;j<4;j++)
+    {
+        if(values[i]>values[j])
+         {
+         aux=values[i];
+         values[i]=values[j];
+         values[j]=aux;
+         }
+
+    }
+
+}
 bool checkMoveValidity(Point Move[4])
 {
     //CHECK IF 3 ARE ON THE SAME LINE OR COLUMN
-    Point MoveCounter[4];
+    int MoveCounter[4];
     for(int i=0;i<4;i++)
     {
         for(int j=i;j<4;j++)
@@ -26,17 +43,17 @@ bool checkMoveValidity(Point Move[4])
 
             if(Move[i].x==Move[j].x)
                 {
-                    MoveCounter[i].x++;
-                    MoveCounter[j].x++;
+                    MoveCounter[i]++;
+                    MoveCounter[j]++;
 
                 }
             if(Move[i].y==Move[j].y)
             {
-                MoveCounter[i].y++;
-                MoveCounter[j].y++;
+                MoveCounter[i]++;
+                MoveCounter[j]++;
             }
           }
-        if()
+
     }
 
 
