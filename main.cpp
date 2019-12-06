@@ -1,5 +1,6 @@
 #include <iostream>
-//Home test
+#include <math.h>
+#include <stdlib.h>
 using namespace std;
 int GameBoard[4][4];
 struct Point{
@@ -31,6 +32,12 @@ for(int i=0;i<4;i++)
 
     }
 
+}
+bool isAdjacentTo(Point A,Point B)
+{
+    if(abs(A.x-B.x)==1||abs(A.y-B.y)==1)
+        return true;
+    return false;
 }
 bool checkMoveValidity(Point Move[4])
 {
