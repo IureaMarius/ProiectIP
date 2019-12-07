@@ -15,10 +15,10 @@ struct Point{
 };
 //GLOBAL VARIABLES
 Point selectedMove[4];
-int GameBoard[4][4]={2, 0, -1, -1,
-                     1, 0, 0, -1,
-                     1, 0, 0, -1,
-                     1, 1, 0, 2};
+int GameBoard[4][4]={2, 0, -1, 0,
+                     0, 1, -1, 0,
+                     0, 1, -1, -1,
+                     1, 1, 2, 0};
 int currentPlayer=-1;
 
 
@@ -97,11 +97,87 @@ bool checkMoveValidity(Point Move[4])
     if(adjacencyCounter!=3)
         return false;
     //CHECK IF THE CELLS SELECTED ARE AVAILABLE
+    int checkDuplicateMove=0;//ALSO CHECKING IF THE MOVE IS THE SAME AS THE ORIGINAL POSITION
     for(int i=0;i<4;i++)
-        if(GameBoard[Move[i].x][Move[i].y]==-currentPlayer)
+        {if(GameBoard[Move[i].x][Move[i].y]==-currentPlayer||GameBoard[Move[i].x][Move[i].y]==2)
             return false;
+         if(GameBoard[Move[i].x][Move[i].y]==currentPlayer)
+            checkDuplicateMove++;
+        }
+    if(checkDuplicateMove==4)
+        return false;
 
     return true;
+}
+
+
+int remainingPossibleMoves()
+{
+    Point moveToBeChecked[4];
+    int possibleMoves=0;
+for(int j=0;j<4;j++)
+    for(int i=0;i<2;i++)
+    {
+    moveToBeChecked[0].x=i;
+    moveToBeChecked[0].y=j;
+
+    moveToBeChecked[1].x=i+1;
+    moveToBeChecked[1].y=j;
+
+    moveToBeChecked[2].x=i+2;
+    moveToBeChecked[2].y=j;
+
+    moveToBeChecked[3].x=i;
+    moveToBeChecked[3].y=j-1;
+    if(checkMoveValidity(moveToBeChecked))
+        possibleMoves++;
+
+    moveToBeChecked[3].x=i;
+    moveToBeChecked[3].y=j+1;
+    if(checkMoveValidity(moveToBeChecked))
+        possibleMoves++;
+
+    moveToBeChecked[3].x=i+2;
+    moveToBeChecked[3].y=j-1;
+    if(checkMoveValidity(moveToBeChecked))
+        possibleMoves++;
+
+    moveToBeChecked[3].x=i+2;
+    moveToBeChecked[3].y=j+1;
+    if(checkMoveValidity(moveToBeChecked))
+        possibleMoves++;
+
+    moveToBeChecked[0].x=j;
+    moveToBeChecked[0].y=i;
+
+    moveToBeChecked[1].x=j;
+    moveToBeChecked[1].y=i+1;
+
+    moveToBeChecked[2].x=j;
+    moveToBeChecked[2].y=i+2;
+
+    moveToBeChecked[3].x=j-1;
+    moveToBeChecked[3].y=i;
+    if(checkMoveValidity(moveToBeChecked))
+        possibleMoves++;
+
+    moveToBeChecked[3].x=j+1;
+    moveToBeChecked[3].y=i;
+    if(checkMoveValidity(moveToBeChecked))
+        possibleMoves++;
+
+    moveToBeChecked[3].x=j-1;
+    moveToBeChecked[3].y=i+2;
+    if(checkMoveValidity(moveToBeChecked))
+        possibleMoves++;
+
+    moveToBeChecked[3].x=j+1;
+    moveToBeChecked[3].y=i+2;
+    if(checkMoveValidity(moveToBeChecked))
+        possibleMoves++;
+    }
+    return possibleMoves;
+
 }
 
 int main()
@@ -115,9 +191,11 @@ int main()
     selectedMove[2].y=2;
     selectedMove[3].x=2;
     selectedMove[3].y=3;
-    if(checkMoveValidity(selectedMove))
+    cout<<remainingPossibleMoves();
+    /*if(checkMoveValidity(selectedMove))
         cout<<"VALID MOVE";
     else cout<<"INVALID MOVE";
+        */
     //TODO: CHECK MORE CORNER CASES AND MAKE SURE THE FUNCTION DOESN'T HAVE ANY BUGS
     return 0;
 }
