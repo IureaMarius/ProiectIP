@@ -15,10 +15,10 @@ struct Point{
 };
 //GLOBAL VARIABLES
 Point selectedMove[4];
-int GameBoard[4][4]={2, 0, -1, 0,
-                     0, 1, -1, 0,
-                     0, 1, -1, -1,
-                     1, 1, 2, 0};
+int GameBoard[4][4]={2, 0, -1, -1,
+                     1, 0, 0, -1,
+                     1, 0, 0, -1,
+                     1, 1, 0, 2};
 int currentPlayer=-1;
 
 
@@ -180,22 +180,50 @@ for(int j=0;j<4;j++)
 
 }
 
+void makeMove(Point Move[4])
+{
+    for(int i=0;i<4;i++)
+        for(int j=0;j<4;j++)
+            if(GameBoard[i][j]==currentPlayer)
+                GameBoard[i][j]=0;
+    for(int i=0;i<4;i++)
+    {
+        GameBoard[Move[i].x][Move[i].y]=currentPlayer;
+    }
+}
+
 int main()
 {
-    //TESTING VALUES
-    selectedMove[0].x=2;
-    selectedMove[0].y=1;
-    selectedMove[1].x=2;
-    selectedMove[1].y=0;
+    //TESTING VALUES X IS VERTICAL AND Y IS HORIZONTAL
+    selectedMove[0].x=0;
+    selectedMove[0].y=2;
+    selectedMove[1].x=1;
+    selectedMove[1].y=2;
     selectedMove[2].x=2;
     selectedMove[2].y=2;
     selectedMove[3].x=2;
     selectedMove[3].y=3;
-    cout<<remainingPossibleMoves();
-    /*if(checkMoveValidity(selectedMove))
+
+    if(checkMoveValidity(selectedMove))
         cout<<"VALID MOVE";
     else cout<<"INVALID MOVE";
-        */
+
+    cout<<'\n';
+    for(int i=0;i<4;i++)
+    {   for(int j=0;j<4;j++)
+            cout<<GameBoard[i][j]<<' ';
+
+        cout<<'\n';
+    }
+    makeMove(selectedMove);
+    cout<<'\n';
+    for(int i=0;i<4;i++)
+    {   for(int j=0;j<4;j++)
+            cout<<GameBoard[i][j]<<' ';
+
+        cout<<'\n';
+    }
+
     //TODO: CHECK MORE CORNER CASES AND MAKE SURE THE FUNCTION DOESN'T HAVE ANY BUGS
     return 0;
 }
