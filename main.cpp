@@ -80,8 +80,13 @@ bool checkMoveValidity(Point Move[4])
     }
     //CHECK IF THE PIECE IS IN THET SHAPE OF _|_ : IF THE PIECE THAT IS ON  THE SAME ROW WITH 2 OTHER PIECES IS ADJACENT TO A THIRD ONE THEN IT IS _|_ AND NOT L
     int parseVariable=0;
-    while(MoveCounter[parseVariable]!=3)
-        parseVariable++;
+    while(parseVariable<4)
+    {
+       if(MoveCounter[parseVariable]==3)
+        break;
+       parseVariable++;
+    }
+
     if(MoveCounter[parseVariable]!=3)
         return false;//THERE ARE NO PIECES WITH VALUE 3
     int pieceWith3Counter=0;
