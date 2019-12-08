@@ -82,7 +82,7 @@ void selectMove(Point Move[4])
 
         for(int i=0;i<4;i++)
         {
-            //if(counter>3)break;
+
             for(int j=0;j<4;j++)
             {
 
@@ -95,7 +95,7 @@ void selectMove(Point Move[4])
                     setfillstyle(1,GREEN);
                     bar(tileSize*i+offset,tileSize*j+offset,tileSize*(i+1)+offset,tileSize*(j+1)+offset);
                     counter++;
-                    //if(counter>3)break;
+
 
 
                 }
@@ -104,6 +104,13 @@ void selectMove(Point Move[4])
         }
 
     }
+    //THIS PIECE OF CODE MAKES IT SO IF THE FIRST 4 TILES YOU CHOOSE ARE A VALID MOVE THE GAME WON'T ACCEPT IT
+    if(counter>4)
+        for(int i=0;i<16;i++)
+    { Move[i].x=-1;
+      Move[i].y=-1;
+    }
+    //MAKES SURE THAT ON THE NEXT CALL OF THIS FUNCTION THE GAME WILL WAIT FOR THE PLAYER TO PRESS LEFT CLICK
     clearmouseclick(WM_LBUTTONDOWN);
     clearmouseclick(WM_LBUTTONUP);
 
