@@ -3,7 +3,6 @@
 #include <winbgim.h>
 #include "main.cpp"
 #include <iostream>
-#include <cstdio>
 using namespace std;
 struct Point{
     int x;
@@ -48,55 +47,64 @@ void drawGameBoard(int GameBoard[4][4])
 
 
 }
-
-void selectMove(Point Move[16])
+bool checkIfMoveInList(Point Move[4],int j,int i)
 {
+    for(int k=0;k<16;k++)
+        if(Move[k].x==j&&Move[k].y==i)
+            return false;
 
-    Move[0].x=-1;
-    Move[0].y=-1;
-    Move[1].x=-1;
-    Move[1].y=-1;
-    Move[2].x=-1;
-    Move[2].y=-1;
-    Move[3].x=-1;
-    Move[3].y=-1;
-    int x=0,y=0,counter=0;
-    bool clicked=true;
-    setfillstyle(1,GREEN);
-char msg[128];
+    return true;
+}
+void selectMove(Point Move[4])
+{
+    for(int i=0;i<16;i++)
+    { Move[i].x=-1;
+      Move[i].y=-1;
+    }
+
+    int x=-1,y=-1,counter=0;
+    bool clicked=false;
+
+    while(!ismouseclick(WM_LBUTTONDOWN))
+    {clicked=true;
+
+    }
 
 
     while(clicked)
     {
-        sprintf(msg, "variable=%d", x);
-        outtextxy(900,900,msg);
-        //cout<<x<<' '<<y<<'\n';
-        getmouseclick(WM_LBUTTONDOWN,x,y);
-        if(x!=-1&&y!=-1)
-            clicked=true;
-        getmouseclick(WM_LBUTTONUP,x,y);
-        if(x==-1&&y==-1)
-            clicked=false;
+
+        if(ismouseclick(WM_LBUTTONUP))
+        {clicked=false;cout<<"OUT";}
 
         x=mousex();
         y=mousey();
+
         for(int i=0;i<4;i++)
+        {
+            //if(counter>3)break;
             for(int j=0;j<4;j++)
             {
 
-                if((y>=tileSize*j+offset&&y<=tileSize*(j+1)+offset)&&(x>=tileSize*i+offset&&x<=tileSize*(i+1)+offset)&&!(j==Move[counter].x&&i==Move[counter].y))
+                if((y>=tileSize*j+offset&&y<=tileSize*(j+1)+offset)&&(x>=tileSize*i+offset&&x<=tileSize*(i+1)+offset)&&checkIfMoveInList(Move,j,i))
                 {
+                    cout<<"Drew in block at "<<j<<' '<<i<<'\n';
                     Move[counter].x=j;
                     Move[counter].y=i;
+
                     setfillstyle(1,GREEN);
                     bar(tileSize*i+offset,tileSize*j+offset,tileSize*(i+1)+offset,tileSize*(j+1)+offset);
                     counter++;
+                    //if(counter>3)break;
 
 
                 }
             }
-       // cout<<"O";
-    }
 
+        }
+
+    }
+    clearmouseclick(WM_LBUTTONDOWN);
+    clearmouseclick(WM_LBUTTONUP);
 
 }

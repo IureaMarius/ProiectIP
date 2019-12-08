@@ -78,6 +78,24 @@ bool checkMoveValidity(Point Move[4])
           }
 
     }
+    //CHECK IF THE PIECE IS IN THET SHAPE OF _|_ : IF THE PIECE THAT IS ON  THE SAME ROW WITH 2 OTHER PIECES IS ADJACENT TO A THIRD ONE THEN IT IS _|_ AND NOT L
+    int parseVariable=0;
+    while(MoveCounter[parseVariable]!=3)
+        parseVariable++;
+    if(MoveCounter[parseVariable]!=3)
+        return false;//THERE ARE NO PIECES WITH VALUE 3
+    int pieceWith3Counter=0;
+    for(int i=0;i<4;i++)
+        if(i!=parseVariable)
+            if(isAdjacentTo(Move[parseVariable],Move[i]))
+                pieceWith3Counter++;
+
+    if(pieceWith3Counter==3)
+        return false;   // _|_ SHAPED
+
+
+
+
     //IF THE CELLS ARE IN THE L POSITION THE VALUES IN THE SORTED MOVECOUNTER ARRAY WILL BE 1 2 2 3
     sortMoveByValue(MoveCounter);
     int shapeCheckArray[4]={1,2,2,3};
@@ -212,10 +230,14 @@ int main()
     startGameWindow();
     drawGameBoard(GameBoard);
     selectMove(selectedMove);
-    while(selectedMove[3].x==-1)
+    while(!checkMoveValidity(selectedMove))
+    {   drawGameBoard(GameBoard);
         selectMove(selectedMove);
-
+        drawGameBoard(GameBoard);
+    }
+    cout<<"made a valid move";
     makeMove(selectedMove);
+
     drawGameBoard(GameBoard);
     getch();
 
