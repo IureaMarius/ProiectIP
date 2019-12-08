@@ -1,6 +1,7 @@
 #include <iostream>
 #include <math.h>
 #include <stdlib.h>
+#include "display.h"
 using namespace std;
 /*
 PLAYER 1 IS RED AND PLAYER 2 IS BLUE,
@@ -14,12 +15,13 @@ struct Point{
     int y;
 };
 //GLOBAL VARIABLES
-Point selectedMove[4];
+Point selectedMove[4],neutralMoveFrom,neutralMoveTo;
 int GameBoard[4][4]={2, 0, -1, -1,
                      1, 0, 0, -1,
                      1, 0, 0, -1,
                      1, 1, 0, 2};
 int currentPlayer=-1;
+
 
 
 bool checkPointBounds(Point A)
@@ -191,6 +193,12 @@ void makeMove(Point Move[4])
         GameBoard[Move[i].x][Move[i].y]=currentPlayer;
     }
 }
+void moveNeutral(Point moveFrom,Point moveTo)
+{
+    GameBoard[moveFrom.y][moveFrom.x]=0;
+    GameBoard[moveTo.y][moveTo.x]=2;
+
+}
 
 int main()
 {
@@ -203,7 +211,12 @@ int main()
     selectedMove[2].y=2;
     selectedMove[3].x=2;
     selectedMove[3].y=3;
+    startGameWindow();
+    drawGameBoard(GameBoard);
+    makeMove(selectedMove);
+    drawGameBoard(GameBoard);
 
+    /*
     if(checkMoveValidity(selectedMove))
         cout<<"VALID MOVE";
     else cout<<"INVALID MOVE";
@@ -224,6 +237,7 @@ int main()
         cout<<'\n';
     }
 
+*/
     //TODO: CHECK MORE CORNER CASES AND MAKE SURE THE FUNCTION DOESN'T HAVE ANY BUGS
     return 0;
 }
