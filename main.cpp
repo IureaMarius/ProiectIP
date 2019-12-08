@@ -139,7 +139,7 @@ int remainingPossibleMoves()
     Point moveToBeChecked[4];
     int possibleMoves=0;
 for(int j=0;j<4;j++)
-    for(int i=0;i<2;i++)
+    {for(int i=0;i<2;i++)
     {
     moveToBeChecked[0].x=i;
     moveToBeChecked[0].y=j;
@@ -199,6 +199,7 @@ for(int j=0;j<4;j++)
     if(checkMoveValidity(moveToBeChecked))
         possibleMoves++;
     }
+}
     return possibleMoves;
 
 }
