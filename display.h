@@ -24,7 +24,7 @@ void startGameWindow(){
 void drawGameBoard(int GameBoard[4][4])
 {
 
-    //setactivepage(page);
+
     setvisualpage(1-page);
     cleardevice();
     //CHECK ALL TITLES AND COLOR THEM ACCORDINGLY
