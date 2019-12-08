@@ -70,7 +70,7 @@ void selectMove(Point Move[4])
 
     }
 
-
+    clearmouseclick(WM_LBUTTONUP);
     while(clicked)
     {
 
