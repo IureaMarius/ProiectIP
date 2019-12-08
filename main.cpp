@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <math.h>
 #include <stdlib.h>
@@ -10,10 +11,7 @@ AND THE CELLS WITH THE RED CELLS WILL BE MARKED BY -1
 THE NEUTRAL PIECES WILL BE MARKED BY 2
 THE EMPTY TILES WILL BE MARKED BY 0
 */
-struct Point{
-    int x;
-    int y;
-};
+
 //GLOBAL VARIABLES
 Point selectedMove[4],neutralMoveFrom,neutralMoveTo;
 int GameBoard[4][4]={2, 0, -1, -1,
@@ -213,8 +211,14 @@ int main()
     selectedMove[3].y=3;
     startGameWindow();
     drawGameBoard(GameBoard);
+    selectMove(selectedMove);
+    while(selectedMove[3].x==-1)
+        selectMove(selectedMove);
+
     makeMove(selectedMove);
     drawGameBoard(GameBoard);
+    getch();
+
 
     /*
     if(checkMoveValidity(selectedMove))
