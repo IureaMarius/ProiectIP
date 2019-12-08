@@ -235,7 +235,8 @@ int main()
     selectedMove[3].y=3;
 
     startGameWindow();
-
+    //SOMETIMES HAVE TO CALL DRAWGAMEBOARD TWICE FOR THE DOUBLE BUFFER TO WORK.
+    // NOT REALLY A PROBLEM SINCE IT DOESN'T TAKE THAT MUCH TIME TO RUN, BUT MAYBE MAKE A FUNCTION THAT CALLS IT TWICE SO THE CODE ISN'T AS MESSY
     drawGameBoard(GameBoard);
     drawGameBoard(GameBoard);
     selectMove(selectedMove);
@@ -247,6 +248,7 @@ int main()
     cout<<"made a valid move";
     makeMove(selectedMove);
 
+    drawGameBoard(GameBoard);
     drawGameBoard(GameBoard);
     getch();
 
