@@ -3,6 +3,7 @@
 #include <winbgim.h>
 #include "main.cpp"
 #include <iostream>
+
 using namespace std;
 struct Point{
     int x;
@@ -12,13 +13,19 @@ struct Point{
 int windowWidth=getmaxwidth(),windowHeight=getmaxheight();
 int realWidth=windowWidth-300,realHeight=windowHeight-300;
 int tileSize=realHeight/4,offset=150;
+int page=0;
 void startGameWindow(){
+
+
     initwindow(windowHeight ,windowHeight);
+
     }
+
 void drawGameBoard(int GameBoard[4][4])
 {
 
-
+    //setactivepage(page);
+    setvisualpage(1-page);
     cleardevice();
     //CHECK ALL TITLES AND COLOR THEM ACCORDINGLY
     for(int i=0;i<4;i++)
@@ -43,7 +50,8 @@ void drawGameBoard(int GameBoard[4][4])
                 bar(tileSize*i+offset,tileSize*j+offset,tileSize*(i+1)+offset,tileSize*(j+1)+offset);
             }
         }
-
+    page=1-page;
+    setactivepage(page);
 
 
 }

@@ -232,7 +232,10 @@ int main()
     selectedMove[2].y=2;
     selectedMove[3].x=2;
     selectedMove[3].y=3;
+
     startGameWindow();
+
+    drawGameBoard(GameBoard);
     drawGameBoard(GameBoard);
     selectMove(selectedMove);
     while(!checkMoveValidity(selectedMove))
