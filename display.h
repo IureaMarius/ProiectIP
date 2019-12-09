@@ -15,10 +15,7 @@ int realWidth=windowWidth-300,realHeight=windowHeight-300;
 int tileSize=realHeight/4,offset=150;
 int page=0;
 void startGameWindow(){
-
-
     initwindow(windowHeight ,windowHeight);
-
     }
 
 void drawGameBoard(int GameBoard[4][4])
@@ -72,7 +69,7 @@ void selectMove(Point Move[4])
 
     int x=-1,y=-1,counter=0;
     bool clicked=false;
-
+//CHECK IF LEFT MOUSE BUTTON IS CLICKED
     while(!ismouseclick(WM_LBUTTONDOWN))
     {clicked=true;
 

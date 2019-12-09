@@ -10,8 +10,9 @@ IN THE GAME BOARD MATRIX THE CELLS WITH THE BLUE L WILL BE MARKED BY 1
 AND THE CELLS WITH THE RED CELLS WILL BE MARKED BY -1
 THE NEUTRAL PIECES WILL BE MARKED BY 2
 THE EMPTY TILES WILL BE MARKED BY 0
-*/
 
+*/
+///feat tudor hutu
 //GLOBAL VARIABLES
 Point selectedMove[4],neutralMoveFrom,neutralMoveTo;
 int GameBoard[4][4]={2, 0, -1, -1,
@@ -205,7 +206,7 @@ for(int j=0;j<4;j++)
 }
 
 void makeMove(Point Move[4])
-{
+{//DOESN'T CHECK IF THE MOVE IS VALID
     for(int i=0;i<4;i++)
         for(int j=0;j<4;j++)
             if(GameBoard[i][j]==currentPlayer)
@@ -225,14 +226,7 @@ void moveNeutral(Point moveFrom,Point moveTo)
 int main()
 {
     //TESTING VALUES X IS VERTICAL AND Y IS HORIZONTAL
-    selectedMove[0].x=0;
-    selectedMove[0].y=2;
-    selectedMove[1].x=1;
-    selectedMove[1].y=2;
-    selectedMove[2].x=2;
-    selectedMove[2].y=2;
-    selectedMove[3].x=2;
-    selectedMove[3].y=3;
+
 
     startGameWindow();
     //SOMETIMES HAVE TO CALL DRAWGAMEBOARD TWICE FOR THE DOUBLE BUFFER TO WORK.
