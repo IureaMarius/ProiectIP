@@ -27,11 +27,11 @@ void startGameWindow(){
 void drawStartScreen()
 {
 
-    char msg[100]="BONOL";
+    char msg[100]="BONOL!";
     setvisualpage(1-page);
     cleardevice();
-    int boxCornerLeftx=3*offset*1.5f,boxCornerLefty=offset,boxCornerRightx=7*offset*1.5f,boxCornerRighty=3*offset;
-    int width=7*offset*1.5f-3*offset*1.5f,height=2*offset;
+    int boxCornerLeftx=3*offset*1.5f,boxCornerLefty=offset-offset/2,boxCornerRightx=7*offset*1.5f,boxCornerRighty=3*offset-offset/2;
+
     rectangle(boxCornerLeftx,boxCornerLefty,boxCornerRightx,boxCornerRighty);
     settextstyle(DEFAULT_FONT,HORIZ_DIR ,textSizeStart);
 
@@ -47,12 +47,38 @@ void drawStartScreen()
     rectangle(boxCornerLeftx,boxCornerLefty,boxCornerRightx,boxCornerRighty);
     sprintf(msg,"PLAY");
     outtextxy((boxCornerLeftx+boxCornerRightx)/2-textwidth(msg)/2,(boxCornerLefty+boxCornerRighty)/2-textheight(msg)/2,msg);
+    boxCornerLefty+=3*offset;
+    boxCornerRighty+=3*offset;
+    rectangle(boxCornerLeftx,boxCornerLefty,boxCornerRightx,boxCornerRighty);
+    sprintf(msg,"EXIT");
+    outtextxy((boxCornerLeftx+boxCornerRightx)/2-textwidth(msg)/2,(boxCornerLefty+boxCornerRighty)/2-textheight(msg)/2,msg);
     page=1-page;
     setactivepage(page);
 
 
 }
+void selectMenuButton(int &stageSelect)
+{
+    int boxCornerLeftx=3*offset*1.5f,boxCornerLefty=offset-offset/2,boxCornerRightx=7*offset*1.5f,boxCornerRighty=3*offset-offset/2;
+    int x,y;
+    clearmouseclick(WM_LBUTTONDOWN);
+    while(!ismouseclick(WM_LBUTTONDOWN))
+    {
 
+    }
+    x=mousex();
+    y=mousey();
+    boxCornerLefty+=3*offset;
+    boxCornerRighty+=3*offset;
+    if(x>boxCornerLeftx&&x<boxCornerRightx&&y>boxCornerLefty&&y<boxCornerRighty)
+        stageSelect=1;
+    boxCornerLefty+=3*offset;
+    boxCornerRighty+=3*offset;
+    if(x>boxCornerLeftx&&x<boxCornerRightx&&y>boxCornerLefty&&y<boxCornerRighty)
+        stageSelect=2;
+
+
+}
 void drawGameBoard(int GameBoard[4][4])
 {
 

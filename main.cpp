@@ -20,7 +20,7 @@ int GameBoard[4][4]={2, 0, -1, -1,
                      1, 0, 0, -1,
                      1, 0, 0, -1,
                      1, 1, 0, 2};
-int currentPlayer=-1;
+int currentPlayer=-1,stage=0;
 
 
 
@@ -228,10 +228,13 @@ int main()
     drawStartScreen();
     drawStartScreen();
 
+    while(stage==0)
+        selectMenuButton(stage);
+
 
     //SOMETIMES HAVE TO CALL DRAWGAMEBOARD TWICE FOR THE DOUBLE BUFFER TO WORK.
     // NOT REALLY A PROBLEM SINCE IT DOESN'T TAKE THAT MUCH TIME TO RUN, BUT MAYBE MAKE A FUNCTION THAT CALLS IT TWICE SO THE CODE ISN'T AS MESSY
-    /*
+    if(stage==1){
     while(remainingPossibleMoves())
     {
 
@@ -259,8 +262,12 @@ int main()
 
     drawGameBoard(GameBoard);
     drawGameBoard(GameBoard);
-    */
+
     getch();
+    }else{
+    closegraph();
+    }
+
 
 
     /*
