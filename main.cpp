@@ -216,12 +216,7 @@ void makeMove(Point Move[4])
         GameBoard[Move[i].x][Move[i].y]=currentPlayer;
     }
 }
-void moveNeutral(Point moveFrom,Point moveTo)
-{
-    GameBoard[moveFrom.y][moveFrom.x]=0;
-    GameBoard[moveTo.y][moveTo.x]=2;
 
-}
 
 int main()
 {
@@ -242,15 +237,19 @@ int main()
     {   drawGameBoard(GameBoard);
         selectMove(selectedMove);
         drawGameBoard(GameBoard);
+
     }
     cout<<"made a valid move";
     makeMove(selectedMove);
-
+    drawGameBoard(GameBoard);
+    drawGameBoard(GameBoard);
+    doNeutralMove(GameBoard);
     drawGameBoard(GameBoard);
     drawGameBoard(GameBoard);
 
     currentPlayer=-currentPlayer;
     }
+    cout<<"No more possible moves,"<<currentPlayer<<"wins!";
     getch();
 
 

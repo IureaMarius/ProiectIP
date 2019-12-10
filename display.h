@@ -60,8 +60,60 @@ bool checkIfMoveInList(Point Move[4],int j,int i)
 
     return true;
 }
-void selectNeutralMove(Point Move)
+void doNeutralMove(int GameBoard[4][4])
 {
+    clearmouseclick(WM_LBUTTONDOWN);
+    clearmouseclick(WM_LBUTTONUP);
+    int x,y,toDeletex=-1,toDeletey=-1;
+    bool madeTheMove=false;
+    while(!madeTheMove)
+    {
+
+
+    while(toDeletex==-1)
+    {
+
+    clearmouseclick(WM_LBUTTONDOWN);
+    while(!ismouseclick(WM_LBUTTONDOWN))
+    {
+
+    }
+    x=mousex();
+    y=mousey();
+    //ERASE THE TILE YOU WANT TO MOVE
+    for(int i=0;i<4;i++)
+        for(int j=0;j<4;j++)
+            if((y>=tileSize*j+offset&&y<=tileSize*(j+1)+offset)&&(x>=tileSize*i+offset&&x<=tileSize*(i+1)+offset))
+                if(GameBoard[j][i]==2)
+                    {
+                        toDeletex=j;
+                        toDeletey=i;
+                        setfillstyle(1,CYAN);
+                    bar(tileSize*i+offset,tileSize*j+offset,tileSize*(i+1)+offset,tileSize*(j+1)+offset);
+                    }
+
+    }
+    clearmouseclick(WM_LBUTTONDOWN);
+    clearmouseclick(WM_LBUTTONUP);
+    while(!ismouseclick(WM_LBUTTONDOWN))
+    {
+
+    }
+    x=mousex();
+    y=mousey();
+
+    for(int i=0;i<4;i++)
+        for(int j=0;j<4;j++)
+            if((y>=tileSize*j+offset&&y<=tileSize*(j+1)+offset)&&(x>=tileSize*i+offset&&x<=tileSize*(i+1)+offset))
+                if(GameBoard[j][i]==0)
+                   {
+                    GameBoard[toDeletex][toDeletey]=0;
+                    GameBoard[j][i]=2;
+                    madeTheMove=true;
+                   }
+    }
+
+
 
 }
 void selectMove(Point Move[4])
