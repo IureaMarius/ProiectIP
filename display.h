@@ -3,8 +3,10 @@
 #include <winbgim.h>
 #include "main.cpp"
 #include <iostream>
-
+#include <cstdio>
 using namespace std;
+
+extern int currentPlayer;
 struct Point{
     int x;
     int y;
@@ -12,10 +14,11 @@ struct Point{
 
 int windowWidth=getmaxwidth(),windowHeight=getmaxheight();
 int realWidth=windowWidth-300,realHeight=windowHeight-300;
-int tileSize=realHeight/4,offset=150;
+int tileSize=realHeight/4,offset=windowHeight/10,textSize1=20,textSize2=20;
 int page=0;
+int remainingPossibleMoves();
 void startGameWindow(){
-    initwindow(windowHeight ,windowHeight);
+    initwindow(windowHeight*1.5f,windowHeight*0.9f);
     }
 
 void drawGameBoard(int GameBoard[4][4])
@@ -47,6 +50,51 @@ void drawGameBoard(int GameBoard[4][4])
                 bar(tileSize*i+offset,tileSize*j+offset,tileSize*(i+1)+offset,tileSize*(j+1)+offset);
             }
         }
+    //THE NEXT PART OF THE FUNCTION DEALS WITH THE DISPLAYING OF TEXT AND IT'S SIZING IN RELATION TO THE RESOLUTION THE GAME IS PLAYED AT
+    char msg[100];
+    if(remainingPossibleMoves()!=0)
+        if(currentPlayer==1)
+            {sprintf(msg,"BLUE'S TURN");
+            setcolor(BLUE);
+            }
+            else {
+                    sprintf(msg,"RED'S TURN");
+                    setcolor(RED);
+                 }
+
+    if(remainingPossibleMoves()==0)
+        if(currentPlayer==1)
+            {sprintf(msg,"RED WINS!");
+            setcolor(RED);
+            }
+            else {
+                    sprintf(msg,"BLUE WINS!");
+                    setcolor(BLUE);
+                 }
+    settextstyle(DEFAULT_FONT,HORIZ_DIR ,textSize1);
+    while(textwidth(msg)>windowHeight*1.5f-(4*tileSize+2*offset))
+    {
+    textSize1-=0.1;
+    settextstyle(DEFAULT_FONT,HORIZ_DIR ,textSize1);
+
+    }
+
+    outtextxy(4*tileSize+2*offset,windowHeight/2-offset,msg);
+    int remainingMoves=remainingPossibleMoves();
+
+    sprintf(msg,"REMAINING MOVES: %d",remainingMoves);
+    settextstyle(DEFAULT_FONT,HORIZ_DIR ,textSize2);
+    while(textwidth(msg)>windowHeight*1.5f-(4*tileSize+2*offset))
+    {
+    textSize2-=0.1;
+
+    settextstyle(DEFAULT_FONT,HORIZ_DIR ,textSize2);
+    }
+
+    outtextxy(4*tileSize+2*offset,windowHeight/2,msg);
+    setcolor(WHITE);
+
+
     page=1-page;
     setactivepage(page);
 
@@ -83,8 +131,8 @@ void doNeutralMove(int GameBoard[4][4])
     //ERASE THE TILE YOU WANT TO MOVE
     for(int i=0;i<4;i++)
         for(int j=0;j<4;j++)
-            if((y>=tileSize*j+offset&&y<=tileSize*(j+1)+offset)&&(x>=tileSize*i+offset&&x<=tileSize*(i+1)+offset))
-                if(GameBoard[j][i]==2)
+            if((y>tileSize*j+offset&&y<tileSize*(j+1)+offset)&&(x>tileSize*i+offset&&x<tileSize*(i+1)+offset))
+                if(GameBoard[j][i]==2&&toDeletex==-1)
                     {
                         toDeletex=j;
                         toDeletey=i;
@@ -104,8 +152,8 @@ void doNeutralMove(int GameBoard[4][4])
 
     for(int i=0;i<4;i++)
         for(int j=0;j<4;j++)
-            if((y>=tileSize*j+offset&&y<=tileSize*(j+1)+offset)&&(x>=tileSize*i+offset&&x<=tileSize*(i+1)+offset))
-                if(GameBoard[j][i]==0)
+            if((y>tileSize*j+offset&&y<tileSize*(j+1)+offset)&&(x>tileSize*i+offset&&x<tileSize*(i+1)+offset))
+                if(GameBoard[j][i]==0||(j==toDeletex&&i==toDeletey))
                    {
                     GameBoard[toDeletex][toDeletey]=0;
                     GameBoard[j][i]=2;
@@ -118,6 +166,7 @@ void doNeutralMove(int GameBoard[4][4])
 }
 void selectMove(Point Move[4])
 {
+
     for(int i=0;i<16;i++)
     { Move[i].x=-1;
       Move[i].y=-1;
@@ -176,3 +225,8 @@ void selectMove(Point Move[4])
     clearmouseclick(WM_LBUTTONUP);
 
 }
+
+
+
+
+

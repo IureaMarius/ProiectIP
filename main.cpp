@@ -3,6 +3,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include "display.h"
+#include <cstdio>
 using namespace std;
 /*
 PLAYER 1 IS RED AND PLAYER 2 IS BLUE,
@@ -248,8 +249,11 @@ int main()
     drawGameBoard(GameBoard);
 
     currentPlayer=-currentPlayer;
+
     }
     cout<<"No more possible moves,"<<currentPlayer<<"wins!";
+    drawGameBoard(GameBoard);
+    drawGameBoard(GameBoard);
     getch();
 
 
