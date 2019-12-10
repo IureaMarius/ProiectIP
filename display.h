@@ -60,6 +60,10 @@ bool checkIfMoveInList(Point Move[4],int j,int i)
 
     return true;
 }
+void selectNeutralMove(Point Move)
+{
+
+}
 void selectMove(Point Move[4])
 {
     for(int i=0;i<16;i++)
