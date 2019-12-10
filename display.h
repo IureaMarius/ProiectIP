@@ -13,8 +13,11 @@ struct Point{
 };
 
 int windowWidth=getmaxwidth(),windowHeight=getmaxheight();
-int realWidth=windowWidth-300,realHeight=windowHeight-300;
-int tileSize=realHeight/4,offset=windowHeight/10,textSize1=20,textSize2=20;
+int realWidth=windowWidth-300;
+int offset=windowHeight/10;
+int realHeight=windowHeight-3*offset;
+
+int tileSize=realHeight/4,textSize1=20,textSize2=20;
 int page=0;
 int remainingPossibleMoves();
 void startGameWindow(){
@@ -72,7 +75,7 @@ void drawGameBoard(int GameBoard[4][4])
                     setcolor(BLUE);
                  }
     settextstyle(DEFAULT_FONT,HORIZ_DIR ,textSize1);
-    while(textwidth(msg)>windowHeight*1.5f-(4*tileSize+2*offset))
+    while(textwidth(msg)+offset>windowHeight*1.5f-(4*tileSize+2*offset))
     {
     textSize1-=0.1;
     settextstyle(DEFAULT_FONT,HORIZ_DIR ,textSize1);
@@ -84,7 +87,7 @@ void drawGameBoard(int GameBoard[4][4])
 
     sprintf(msg,"REMAINING MOVES: %d",remainingMoves);
     settextstyle(DEFAULT_FONT,HORIZ_DIR ,textSize2);
-    while(textwidth(msg)>windowHeight*1.5f-(4*tileSize+2*offset))
+    while(textwidth(msg)+offset>windowHeight*1.5f-(4*tileSize+2*offset))
     {
     textSize2-=0.1;
 
