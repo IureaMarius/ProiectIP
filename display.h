@@ -11,18 +11,47 @@ struct Point{
     int x;
     int y;
 };
-
+//VALUES OPEN TO CHANGE IN ORDER TO BETTER FIT THE UI IN THE WINDOW
 int windowWidth=getmaxwidth(),windowHeight=getmaxheight();
 int realWidth=windowWidth-300;
 int offset=windowHeight/10;
 int realHeight=windowHeight-3*offset;
 
-int tileSize=realHeight/4,textSize1=20,textSize2=20;
+int tileSize=realHeight/4,textSize1=20,textSize2=20,textSizeStart=20;
 int page=0;
 int remainingPossibleMoves();
 void startGameWindow(){
     initwindow(windowHeight*1.5f,windowHeight*0.9f);
     }
+
+void drawStartScreen()
+{
+
+    char msg[100]="BONOL";
+    setvisualpage(1-page);
+    cleardevice();
+    int boxCornerLeftx=3*offset*1.5f,boxCornerLefty=offset,boxCornerRightx=7*offset*1.5f,boxCornerRighty=3*offset;
+    int width=7*offset*1.5f-3*offset*1.5f,height=2*offset;
+    rectangle(boxCornerLeftx,boxCornerLefty,boxCornerRightx,boxCornerRighty);
+    settextstyle(DEFAULT_FONT,HORIZ_DIR ,textSizeStart);
+
+    while(textheight(msg)>=(boxCornerLefty+boxCornerRighty)||textwidth(msg)>=(boxCornerLeftx+boxCornerRightx))
+    {
+    textSizeStart-=0.1;
+
+    settextstyle(DEFAULT_FONT,HORIZ_DIR ,textSizeStart);
+    }
+    outtextxy((boxCornerLeftx+boxCornerRightx)/2-textwidth(msg)/2,(boxCornerLefty+boxCornerRighty)/2-textheight(msg)/2,msg);
+    boxCornerLefty+=3*offset;
+    boxCornerRighty+=3*offset;
+    rectangle(boxCornerLeftx,boxCornerLefty,boxCornerRightx,boxCornerRighty);
+    sprintf(msg,"PLAY");
+    outtextxy((boxCornerLeftx+boxCornerRightx)/2-textwidth(msg)/2,(boxCornerLefty+boxCornerRighty)/2-textheight(msg)/2,msg);
+    page=1-page;
+    setactivepage(page);
+
+
+}
 
 void drawGameBoard(int GameBoard[4][4])
 {

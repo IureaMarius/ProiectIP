@@ -221,12 +221,17 @@ void makeMove(Point Move[4])
 
 int main()
 {
-    //TESTING VALUES X IS VERTICAL AND Y IS HORIZONTAL
+
 
 
     startGameWindow();
+    drawStartScreen();
+    drawStartScreen();
+
+
     //SOMETIMES HAVE TO CALL DRAWGAMEBOARD TWICE FOR THE DOUBLE BUFFER TO WORK.
     // NOT REALLY A PROBLEM SINCE IT DOESN'T TAKE THAT MUCH TIME TO RUN, BUT MAYBE MAKE A FUNCTION THAT CALLS IT TWICE SO THE CODE ISN'T AS MESSY
+    /*
     while(remainingPossibleMoves())
     {
 
@@ -240,7 +245,7 @@ int main()
         drawGameBoard(GameBoard);
 
     }
-    cout<<"made a valid move";
+
     makeMove(selectedMove);
     drawGameBoard(GameBoard);
     drawGameBoard(GameBoard);
@@ -251,9 +256,10 @@ int main()
     currentPlayer=-currentPlayer;
 
     }
-    cout<<"No more possible moves,"<<currentPlayer<<"wins!";
+
     drawGameBoard(GameBoard);
     drawGameBoard(GameBoard);
+    */
     getch();
 
 
