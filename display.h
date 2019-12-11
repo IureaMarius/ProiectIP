@@ -6,6 +6,14 @@
 #include <cstdio>
 using namespace std;
 
+struct Button{
+int leftCornerx,leftCornery,rightCornerx,rightCornery;
+char label[100];
+Button(int leftx,int lefty, int rightx, int righty):leftCornerx(leftx),leftCornery(lefty),rightCornerx(rightx),rightCornery(righty){}
+};
+
+
+
 extern int currentPlayer;
 struct Point{
     int x;
@@ -13,15 +21,40 @@ struct Point{
 };
 //VALUES OPEN TO CHANGE IN ORDER TO BETTER FIT THE UI IN THE WINDOW
 int windowWidth=getmaxwidth(),windowHeight=getmaxheight();
-int realWidth=windowWidth-300;
+int realWidth=windowHeight*1.5f;
 int offset=windowHeight/10;
-int realHeight=windowHeight-3*offset;
+int realHeight=windowHeight*0.9f;
 
-int tileSize=realHeight/4,textSize1=20,textSize2=20,textSizeStart=20;
+int tileSize=(windowHeight-3*offset)/4,textSize1=20,textSize2=20,textSizeStart=20;
 int page=0;
 int remainingPossibleMoves();
+
+void setButtonText(Button B,char text[100])
+{
+    strcpy(B.label,text);
+}
+
+void displayButton(Button B)
+{
+    rectangle(B.leftCornerx,B.leftCornery,B.rightCornerx,B.rightCornery);
+
+}
+bool isButtonClicked(Button B)
+{
+    int x,y;
+    getmouseclick(WM_LBUTTONDOWN,x,y);
+    if(x>B.leftCornerx&&x<B.rightCornerx&&y>B.leftCornery&&B.rightCornery)
+        return true;
+    return false;
+}
+
+void drawStartScreenStruct()
+{
+    //Button titlescreen(3*offset,offset,realWidth-3*offset,2*offset),playButton(3*offset,3*offset,realWidth-3*offset,4*offset),exitButton()
+}
+
 void startGameWindow(){
-    initwindow(windowHeight*1.5f,windowHeight*0.9f);
+    initwindow(realWidth,realHeight);
     }
 
 void drawStartScreen()
