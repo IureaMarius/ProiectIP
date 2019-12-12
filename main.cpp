@@ -225,11 +225,15 @@ int main()
 
 
     startGameWindow();
-    drawStartScreen();
-    drawStartScreen();
+    drawStartScreenStruct();
+    drawStartScreenStruct();
 
     while(stage==0)
+       {
+
         selectMenuButton(stage);
+        delay(1);
+       }
 
 
     //SOMETIMES HAVE TO CALL DRAWGAMEBOARD TWICE FOR THE DOUBLE BUFFER TO WORK.

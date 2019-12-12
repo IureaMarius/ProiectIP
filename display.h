@@ -4,6 +4,12 @@
 #include "main.cpp"
 #include <iostream>
 #include <cstdio>
+
+#include <windows.h>        // Provides Win32 API
+#include <windowsx.h>       // Provides GDI helper macros
+#include "winbgim.h"         // API routines
+#include "winbgitypes.h"    // Internal structure data
+
 using namespace std;
 
 struct Button{
@@ -11,6 +17,37 @@ int leftCornerx,leftCornery,rightCornerx,rightCornery;
 char label[100];
 Button(int leftx,int lefty, int rightx, int righty):leftCornerx(leftx),leftCornery(lefty),rightCornerx(rightx),rightCornery(righty){}
 };
+
+static bool MouseKindInRange( int kind )
+{
+    return ( (kind >= WM_MOUSEFIRST) && (kind <= WM_MOUSELAST) );
+}
+
+void getmouseclicknopop( int kind, int& x, int& y )
+{
+    WindowData *pWndData = BGI__GetWindowDataPtr( );
+    POINTS where; // POINT (short) to tell where mouse event happened.
+
+    // Check if mouse event is in range
+    if ( !MouseKindInRange( kind ) )
+        return;
+
+    // Set position variables to mouse location, or to NO_CLICK if no event occured
+    if ( MouseKindInRange( kind ) && pWndData->clicks[kind - WM_MOUSEFIRST].size( ) )
+    {
+	where = pWndData->clicks[kind - WM_MOUSEFIRST].front( );
+        //pWndData->clicks[kind - WM_MOUSEFIRST].pop( );
+        x = where.x;
+        y = where.y;
+    }
+    else
+    {
+        x = y = NO_CLICK;
+    }
+}
+
+
+
 
 
 
@@ -24,12 +61,13 @@ int windowWidth=getmaxwidth(),windowHeight=getmaxheight();
 int realWidth=windowHeight*1.5f;
 int offset=windowHeight/10;
 int realHeight=windowHeight*0.9f;
-
+int numberOfStartButtons=2;
 int tileSize=(windowHeight-3*offset)/4,textSize1=20,textSize2=20,textSizeStart=20;
 int page=0;
+Button titleButton(0,0,0,0);Button playButton(0,0,0,0);Button exitButton(0,0,0,0);
 int remainingPossibleMoves();
 
-void setButtonText(Button B,char text[100])
+void setButtonText(Button& B,char text[100])
 {
     strcpy(B.label,text);
 }
@@ -37,20 +75,54 @@ void setButtonText(Button B,char text[100])
 void displayButton(Button B)
 {
     rectangle(B.leftCornerx,B.leftCornery,B.rightCornerx,B.rightCornery);
+    settextstyle(DEFAULT_FONT,HORIZ_DIR,textSizeStart);
+    while(textwidth(B.label)>B.rightCornerx-B.leftCornerx||textheight(B.label)>B.rightCornery-B.leftCornery)
+        textSizeStart-=0.1;
 
+    outtextxy((B.leftCornerx+B.rightCornerx)/2-textwidth(B.label)/2,(B.leftCornery+B.rightCornery)/2-textheight(B.label)/2,B.label);
 }
 bool isButtonClicked(Button B)
 {
     int x,y;
-    getmouseclick(WM_LBUTTONDOWN,x,y);
-    if(x>B.leftCornerx&&x<B.rightCornerx&&y>B.leftCornery&&B.rightCornery)
+    getmouseclicknopop(WM_LBUTTONDOWN,x,y);
+    //clearmouseclick(WM_LBUTTONDOWN);
+    cout<<x<<' '<<y<<'\n';
+    if(x>B.leftCornerx&&x<B.rightCornerx&&y>B.leftCornery&&y<B.rightCornery)
         return true;
     return false;
 }
 
 void drawStartScreenStruct()
 {
-    //Button titlescreen(3*offset,offset,realWidth-3*offset,2*offset),playButton(3*offset,3*offset,realWidth-3*offset,4*offset),exitButton()
+    //CHANGE THESE 2 VARIABLES TO CHANGE THE WAY THE BUTTONS SHOW UP ON SCREEN
+    int buttonGap=(realHeight-3*offset)/numberOfStartButtons;
+    int titleLeftx=3*offset,titleLefty=offset,titleRightx=realWidth-3*offset,titleRighty=2*offset;
+    char titleText[100]="BONOL!",playText[100]="PLAY",exitText[100]="EXIT";
+    titleButton.leftCornerx=titleLeftx;
+    titleButton.leftCornery=titleLefty;
+    titleButton.rightCornerx=titleRightx;
+    titleButton.rightCornery=titleRighty;
+    setButtonText(titleButton,titleText);
+    playButton.leftCornerx=titleLeftx;
+    playButton.leftCornery=titleLefty+buttonGap;
+    playButton.rightCornerx=titleRightx;
+    playButton.rightCornery=titleRighty+buttonGap;
+    setButtonText(playButton,playText);
+    exitButton.leftCornerx=titleLeftx;
+    exitButton.leftCornery=titleLefty+2*buttonGap;
+    exitButton.rightCornerx=titleRightx;
+    exitButton.rightCornery=titleRighty+2*buttonGap;
+    setButtonText(exitButton,exitText);
+    setvisualpage(1-page);
+    cleardevice();
+
+    displayButton(titleButton);
+    displayButton(playButton);
+    displayButton(exitButton);
+
+    page=1-page;
+    setactivepage(page);
+
 }
 
 void startGameWindow(){
@@ -92,23 +164,22 @@ void drawStartScreen()
 }
 void selectMenuButton(int &stageSelect)
 {
-    int boxCornerLeftx=3*offset*1.5f,boxCornerLefty=offset-offset/2,boxCornerRightx=7*offset*1.5f,boxCornerRighty=3*offset-offset/2;
+
     int x,y;
     clearmouseclick(WM_LBUTTONDOWN);
+
     while(!ismouseclick(WM_LBUTTONDOWN))
     {
-
+    delay(1);
     }
-    x=mousex();
-    y=mousey();
-    boxCornerLefty+=3*offset;
-    boxCornerRighty+=3*offset;
-    if(x>boxCornerLeftx&&x<boxCornerRightx&&y>boxCornerLefty&&y<boxCornerRighty)
+    //cout<<isButtonClicked(exitButton);
+
+    if(isButtonClicked(playButton))
         stageSelect=1;
-    boxCornerLefty+=3*offset;
-    boxCornerRighty+=3*offset;
-    if(x>boxCornerLeftx&&x<boxCornerRightx&&y>boxCornerLefty&&y<boxCornerRighty)
+
+    if(isButtonClicked(exitButton))
         stageSelect=2;
+    clearmouseclick(WM_LBUTTONDOWN);
 
 
 }
