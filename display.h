@@ -4,11 +4,8 @@
 #include "main.cpp"
 #include <iostream>
 #include <cstdio>
+#include "nopop.h"
 
-#include <windows.h>        // Provides Win32 API
-#include <windowsx.h>       // Provides GDI helper macros
-#include "winbgim.h"         // API routines
-#include "winbgitypes.h"    // Internal structure data
 
 using namespace std;
 
@@ -18,178 +15,138 @@ char label[100];
 Button(int leftx,int lefty, int rightx, int righty):leftCornerx(leftx),leftCornery(lefty),rightCornerx(rightx),rightCornery(righty){}
 };
 
-static bool MouseKindInRange( int kind )
-{
-    return ( (kind >= WM_MOUSEFIRST) && (kind <= WM_MOUSELAST) );
-}
-
-void getmouseclicknopop( int kind, int& x, int& y )
-{
-    WindowData *pWndData = BGI__GetWindowDataPtr( );
-    POINTS where; // POINT (short) to tell where mouse event happened.
-
-    // Check if mouse event is in range
-    if ( !MouseKindInRange( kind ) )
-        return;
-
-    // Set position variables to mouse location, or to NO_CLICK if no event occured
-    if ( MouseKindInRange( kind ) && pWndData->clicks[kind - WM_MOUSEFIRST].size( ) )
-    {
-	where = pWndData->clicks[kind - WM_MOUSEFIRST].front( );
-        //pWndData->clicks[kind - WM_MOUSEFIRST].pop( );
-        x = where.x;
-        y = where.y;
-    }
-    else
-    {
-        x = y = NO_CLICK;
-    }
-}
-
-
-
-
-
-
 extern int currentPlayer;
 struct Point{
     int x;
     int y;
 };
 //VALUES OPEN TO CHANGE IN ORDER TO BETTER FIT THE UI IN THE WINDOW
-int windowWidth=getmaxwidth(),windowHeight=getmaxheight();
-int realWidth=windowHeight*1.5f;
-int offset=windowHeight/10;
+int windowWidth=getmaxwidth(),windowHeight=getmaxheight(); // THE MAXIMUM SIZE OF THE SCREEN
+
+
+
+int realWidth=windowWidth;// REAL WIDTH AND REAL HEIGHT ARE THE SIZE OF THE ACTUAL WINDOW.
+int offset=windowHeight/10;// A STANDARDIZED OFFSET USED TO ALGIGN UI BECAUSE IT WILL SCALE WELL WITH DIFFERENT RESOLUTIONS
 int realHeight=windowHeight*0.9f;
-int numberOfStartButtons=2;
-int tileSize=(windowHeight-3*offset)/4,textSize1=20,textSize2=20,textSizeStart=20;
-int page=0;
-Button titleButton(0,0,0,0);Button playButton(0,0,0,0);Button exitButton(0,0,0,0);
-int remainingPossibleMoves();
+
+
+int numberOfStartButtons=2;//NUMBERS IN THE START SCREEN
+//TILESIZE IS ONLY USED WHEN INTERACTING WITH THE TILES
+int tileSize=(realHeight-2*offset)/4,textSize1=20,textSize2=20,textSizeStart=20;//TEXT SIZE 1 AND 2 ARE FOR UI ELMENTS IN THE GAME AND TEXTSIZESTART IS FOR THE FONT IN THE START MENU
+
+int page=0;//VARIABLE USED FOR DOUBLE BUFFERING THE FRAMES
+Button titleButton(0,0,0,0);Button playButton(0,0,0,0);Button exitButton(0,0,0,0);//START MENU BUTTONS
+int remainingPossibleMoves();//DECLARED IN MAIN.CPP
 
 void setButtonText(Button& B,char text[100])
 {
     strcpy(B.label,text);
 }
 
-void displayButton(Button B)
+void displayButton(Button B, bool border=true,int borderColour=WHITE,int textColour=WHITE)
 {
+    textSizeStart=20;
+    int currentColour=getcolor();
+    if(border==true)
+    {setcolor(borderColour);
     rectangle(B.leftCornerx,B.leftCornery,B.rightCornerx,B.rightCornery);
+    }
     settextstyle(DEFAULT_FONT,HORIZ_DIR,textSizeStart);
-    while(textwidth(B.label)>B.rightCornerx-B.leftCornerx||textheight(B.label)>B.rightCornery-B.leftCornery)
-        textSizeStart-=0.1;
 
+    while(textwidth(B.label)>=B.rightCornerx-B.leftCornerx||textheight(B.label)>=B.rightCornery-B.leftCornery)
+        {   textSizeStart-=0.1;
+            settextstyle(DEFAULT_FONT,HORIZ_DIR,textSizeStart);
+        }
+    setcolor(textColour);
     outtextxy((B.leftCornerx+B.rightCornerx)/2-textwidth(B.label)/2,(B.leftCornery+B.rightCornery)/2-textheight(B.label)/2,B.label);
+    setcolor(currentColour);
 }
 bool isButtonClicked(Button B)
 {
     int x,y;
-    getmouseclicknopop(WM_LBUTTONDOWN,x,y);
-    //clearmouseclick(WM_LBUTTONDOWN);
-    cout<<x<<' '<<y<<'\n';
+    getmouseclicknopop(WM_LBUTTONDOWN,x,y);//FUNCTION DELCARED IN NOPOP, IT'S THE SAME FUCNTION AS GETMOUSECLICK BUT WITHOUT POPPING THE CLICK FROM THE QUEUE
+
     if(x>B.leftCornerx&&x<B.rightCornerx&&y>B.leftCornery&&y<B.rightCornery)
         return true;
     return false;
 }
 
-void drawStartScreenStruct()
+void drawStartScreen()
 {
-    //CHANGE THESE 2 VARIABLES TO CHANGE THE WAY THE BUTTONS SHOW UP ON SCREEN
+    //CHANGE THESE 5 VARIABLES TO CHANGE THE WAY THE BUTTONS SHOW UP ON SCREEN
     int buttonGap=(realHeight-3*offset)/numberOfStartButtons;
     int titleLeftx=3*offset,titleLefty=offset,titleRightx=realWidth-3*offset,titleRighty=2*offset;
-    char titleText[100]="BONOL!",playText[100]="PLAY",exitText[100]="EXIT";
+    char titleText[100]="BONOL!",playText[100]="PLAY",exitText[100]="EXIT";//CHANGE THE TEXT TO CHANGE THE TEXT IN THE START MENU BUTTONS
+
     titleButton.leftCornerx=titleLeftx;
     titleButton.leftCornery=titleLefty;
     titleButton.rightCornerx=titleRightx;
     titleButton.rightCornery=titleRighty;
     setButtonText(titleButton,titleText);
+
     playButton.leftCornerx=titleLeftx;
     playButton.leftCornery=titleLefty+buttonGap;
     playButton.rightCornerx=titleRightx;
     playButton.rightCornery=titleRighty+buttonGap;
     setButtonText(playButton,playText);
+
     exitButton.leftCornerx=titleLeftx;
     exitButton.leftCornery=titleLefty+2*buttonGap;
     exitButton.rightCornerx=titleRightx;
     exitButton.rightCornery=titleRighty+2*buttonGap;
     setButtonText(exitButton,exitText);
-    setvisualpage(1-page);
+
+    setvisualpage(1-page);// DOUBLE BUFFERING
     cleardevice();
 
     displayButton(titleButton);
     displayButton(playButton);
     displayButton(exitButton);
 
-    page=1-page;
+    page=1-page;//DOUBLE BUFFERING
     setactivepage(page);
 
 }
 
-void startGameWindow(){
-    initwindow(realWidth,realHeight);
-    }
-
-void drawStartScreen()
+void startGameWindow()
 {
-
-    char msg[100]="BONOL!";
-    setvisualpage(1-page);
-    cleardevice();
-    int boxCornerLeftx=3*offset*1.5f,boxCornerLefty=offset-offset/2,boxCornerRightx=7*offset*1.5f,boxCornerRighty=3*offset-offset/2;
-
-    rectangle(boxCornerLeftx,boxCornerLefty,boxCornerRightx,boxCornerRighty);
-    settextstyle(DEFAULT_FONT,HORIZ_DIR ,textSizeStart);
-
-    while(textheight(msg)>=(boxCornerLefty+boxCornerRighty)||textwidth(msg)>=(boxCornerLeftx+boxCornerRightx))
-    {
-    textSizeStart-=0.1;
-
-    settextstyle(DEFAULT_FONT,HORIZ_DIR ,textSizeStart);
-    }
-    outtextxy((boxCornerLeftx+boxCornerRightx)/2-textwidth(msg)/2,(boxCornerLefty+boxCornerRighty)/2-textheight(msg)/2,msg);
-    boxCornerLefty+=3*offset;
-    boxCornerRighty+=3*offset;
-    rectangle(boxCornerLeftx,boxCornerLefty,boxCornerRightx,boxCornerRighty);
-    sprintf(msg,"PLAY");
-    outtextxy((boxCornerLeftx+boxCornerRightx)/2-textwidth(msg)/2,(boxCornerLefty+boxCornerRighty)/2-textheight(msg)/2,msg);
-    boxCornerLefty+=3*offset;
-    boxCornerRighty+=3*offset;
-    rectangle(boxCornerLeftx,boxCornerLefty,boxCornerRightx,boxCornerRighty);
-    sprintf(msg,"EXIT");
-    outtextxy((boxCornerLeftx+boxCornerRightx)/2-textwidth(msg)/2,(boxCornerLefty+boxCornerRighty)/2-textheight(msg)/2,msg);
-    page=1-page;
-    setactivepage(page);
-
-
+    initwindow(realWidth,realHeight);
 }
+
+
 void selectMenuButton(int &stageSelect)
 {
-
-    int x,y;
+    //CHECKS WHICH BUTTON YOU PRESSED IN THE START MENU AND CHANGES THE STAGE VARIABLE ACCORDINGLY
     clearmouseclick(WM_LBUTTONDOWN);
 
     while(!ismouseclick(WM_LBUTTONDOWN))
-    {
-    delay(1);
-    }
-    //cout<<isButtonClicked(exitButton);
+        delay(1);//THIS DELAY RESULTS IN A POLLING RATE OF 1000/SECOND, DON'T DELETE THIS LINE BECAUSE THE PROGRAM WILL USE THE PROCESSOR TOO MUCH
 
     if(isButtonClicked(playButton))
         stageSelect=1;
 
     if(isButtonClicked(exitButton))
         stageSelect=2;
+
     clearmouseclick(WM_LBUTTONDOWN);
-
-
 }
 void drawGameBoard(int GameBoard[4][4])
 {
 
+    int winner=0;//STORES THE WINNER OF THE GAME WHEN REMAININGMOVES GOES TO 0
+    int leftTurnx=9*offset,leftTurny=realHeight/2-offset,rightTurnx=realWidth,rightTurny=realHeight/2;//THE POSITION OF TEXT
+    Button turnButton(leftTurnx,leftTurny,rightTurnx,rightTurny);
+    leftTurny+=2*offset;//PLACES THE REMAINING MOVES TEXT BELOW THE TURN TEXT
+    rightTurny+=2*offset;
+    Button remainingButton(leftTurnx,leftTurny,rightTurnx,rightTurny);
 
-    setvisualpage(1-page);
+    setvisualpage(1-page);//DOUBLE BUFFERING
     cleardevice();
-    //CHECK ALL TITLES AND COLOR THEM ACCORDINGLY
+    //CHECK ALL TITLES AND COLOR THEM ACCORDINGLY:
+    //0 - EMPTY
+    //1 - BLUE
+    //-1 - RED
+    //2 - NETURAL
     for(int i=0;i<4;i++)
         for(int j=0;j<4;j++)
         {
@@ -201,11 +158,13 @@ void drawGameBoard(int GameBoard[4][4])
             if(GameBoard[j][i]==1)
             {   setfillstyle(1,BLUE);
                 bar(tileSize*i+offset,tileSize*j+offset,tileSize*(i+1)+offset,tileSize*(j+1)+offset);
+                rectangle(tileSize*i+offset,tileSize*j+offset,tileSize*(i+1)+offset,tileSize*(j+1)+offset);
             }
 
             if(GameBoard[j][i]==-1)
             {   setfillstyle(1,RED);
                 bar(tileSize*i+offset,tileSize*j+offset,tileSize*(i+1)+offset,tileSize*(j+1)+offset);
+                rectangle(tileSize*i+offset,tileSize*j+offset,tileSize*(i+1)+offset,tileSize*(j+1)+offset);
             }
             if(GameBoard[j][i]==2)
             {   setfillstyle(1,WHITE);
@@ -213,57 +172,63 @@ void drawGameBoard(int GameBoard[4][4])
             }
         }
     //THE NEXT PART OF THE FUNCTION DEALS WITH THE DISPLAYING OF TEXT AND IT'S SIZING IN RELATION TO THE RESOLUTION THE GAME IS PLAYED AT
-    char msg[100];
+    //THIS FIRST PART CHECKS WHO'S TURN IT IS OR IF SOMEONE WON
     if(remainingPossibleMoves()!=0)
         if(currentPlayer==1)
-            {sprintf(msg,"BLUE'S TURN");
-            setcolor(BLUE);
+            {
+                setButtonText(turnButton,"BLUE'S TURN");
             }
             else {
-                    sprintf(msg,"RED'S TURN");
-                    setcolor(RED);
+                    setButtonText(turnButton,"RED'S TURN");
                  }
 
     if(remainingPossibleMoves()==0)
         if(currentPlayer==1)
-            {sprintf(msg,"RED WINS!");
-            setcolor(RED);
+            {
+                setButtonText(turnButton,"RED WINS!");
+                winner=-currentPlayer;
             }
             else {
-                    sprintf(msg,"BLUE WINS!");
-                    setcolor(BLUE);
+                    winner=-currentPlayer;
+                    setButtonText(turnButton,"BLUE WINS!");
                  }
-    settextstyle(DEFAULT_FONT,HORIZ_DIR ,textSize1);
-    while(textwidth(msg)+offset>windowHeight*1.5f-(4*tileSize+2*offset))
-    {
-    textSize1-=0.1;
-    settextstyle(DEFAULT_FONT,HORIZ_DIR ,textSize1);
 
-    }
+    char remainingText[100];//HOLDS THE TEXT THAT SHOWS HOW MANY MOVES POSSIBLE REMAIN
+    int colour;//THE COLOUR OF THE TEXT TO BE DISPLAYED
 
-    outtextxy(4*tileSize+2*offset,windowHeight/2-offset,msg);
+    if(currentPlayer==1)
+        {
+            colour=BLUE;
+        }else
+        {
+            colour=RED;
+
+        }
+    //WINNER OVERRIDES THE COLOUR OF THE TEXT SINCE WHEN IT'S THE PLAYER'S TURN AND HE LOSES, THE TEXT SAYING THAT THE OTHER PLAYER
+    //HAS WON SHOULD BE THE COLOUR OF THE OTHER PLAYER
+    if(winner==1)
+        colour=BLUE;
+    if(winner==-1)
+        colour=RED;
+
+    displayButton(turnButton,false,WHITE,colour);
     int remainingMoves=remainingPossibleMoves();
 
-    sprintf(msg,"REMAINING MOVES: %d",remainingMoves);
-    settextstyle(DEFAULT_FONT,HORIZ_DIR ,textSize2);
-    while(textwidth(msg)+offset>windowHeight*1.5f-(4*tileSize+2*offset))
-    {
-    textSize2-=0.1;
+    sprintf(remainingText,"REMAINING MOVES: %d",remainingMoves);//FILLS IN THE TEXT WITH THE ACTUAL VALUE OF THE REMAINING VALUES
 
-    settextstyle(DEFAULT_FONT,HORIZ_DIR ,textSize2);
-    }
-
-    outtextxy(4*tileSize+2*offset,windowHeight/2,msg);
-    setcolor(WHITE);
+    setButtonText(remainingButton,remainingText);
+    displayButton(remainingButton,false,WHITE,colour);
 
 
-    page=1-page;
+
+    page=1-page;//DOUBLE BUFFERING
     setactivepage(page);
 
 
 }
 bool checkIfMoveInList(Point Move[4],int j,int i)
 {
+    //AUXILIARY FUNCTION, CHECKS IF THE MOVE DEFINED BY THE COORDONATES J AND I IS IN THE POINT LIST MOVE[4]
     for(int k=0;k<16;k++)
         if(Move[k].x==j&&Move[k].y==i)
             return false;
@@ -273,24 +238,26 @@ bool checkIfMoveInList(Point Move[4],int j,int i)
 void doNeutralMove(int GameBoard[4][4])
 {
     clearmouseclick(WM_LBUTTONDOWN);
-    clearmouseclick(WM_LBUTTONUP);
-    int x,y,toDeletex=-1,toDeletey=-1;
-    bool madeTheMove=false;
+    clearmouseclick(WM_LBUTTONUP);//REMOVES THE CLICK THAT WAS IN THE QUEUE FORMERLY, SINCE THE QUEUE COULD HAVE CHANGED OUTSIDE THE FUNCTION
+    int x,y,toDeletex=-1,toDeletey=-1;//TODELETE HOLDS THE TILES THE PROGRAM MAKES EMPTY WHEN YOU MOVE A NEUTRAL MOVE
+    bool madeTheMove=false;//IN ORDER TO WAIT UNTIL A VALID NEUTRAL MOVE IS DONE
     while(!madeTheMove)
     {
 
-
-    while(toDeletex==-1)
+    //THIS TODELETEX CHECK ALSO CHECKS IF THE PLAYER HAS ALREADY SELECTED THE TILE TO MOVE OR IF HE MADE AN INVALID MOVE
+    //IF HE MAKES AN INVALID MOVE THE SELECTED PIECE REMAINS SELECTED
+    while(toDeletex==-1)//THIS WHILE MAKES THE PLAYER PICK A NEUTRAL TILE TO MOVE. IF HE DOESN'T WISH TO MOVE HE CAN MOVE IN PLACE
     {
 
     clearmouseclick(WM_LBUTTONDOWN);
-    while(!ismouseclick(WM_LBUTTONDOWN))
+    while(!ismouseclick(WM_LBUTTONDOWN))//CHECKS IF THE USER HAS CLICKED
     {
-
+        delay(1);//POLLING AT A RATE OF 1000/SECOND
     }
     x=mousex();
-    y=mousey();
-    //ERASE THE TILE YOU WANT TO MOVE
+    y=mousey();//X AND Y COORDONATES OF THE CLICK
+
+    //THE FOLOWING NESTED FORS ERASE THE TILE THE USER WANTS TO MOVE
     for(int i=0;i<4;i++)
         for(int j=0;j<4;j++)
             if((y>tileSize*j+offset&&y<tileSize*(j+1)+offset)&&(x>tileSize*i+offset&&x<tileSize*(i+1)+offset))
@@ -300,18 +267,20 @@ void doNeutralMove(int GameBoard[4][4])
                         toDeletey=i;
                         setfillstyle(1,CYAN);
                     bar(tileSize*i+offset,tileSize*j+offset,tileSize*(i+1)+offset,tileSize*(j+1)+offset);
+                    rectangle(tileSize*i+offset,tileSize*j+offset,tileSize*(i+1)+offset,tileSize*(j+1)+offset);
                     }
 
     }
-    clearmouseclick(WM_LBUTTONDOWN);
-    clearmouseclick(WM_LBUTTONUP);
-    while(!ismouseclick(WM_LBUTTONDOWN))
-    {
 
+    clearmouseclick(WM_LBUTTONDOWN);
+    clearmouseclick(WM_LBUTTONUP);//REMOVES THE CLICK THAT CHOSE THE PIECE THAT HAS TO BE MOVED
+    while(!ismouseclick(WM_LBUTTONDOWN))//WAITS FOR PLAYER TO CLICK WHERE HE WANTS THE SELECTED PIECE TO BE PLACED
+    {
+        delay(1);//POOLING RATE OF 1000/SECOND
     }
     x=mousex();
-    y=mousey();
-
+    y=mousey();//X AND Y COORDONATES OF THE CLICK
+    //THE FOLLOWING PART OF THE FUNCTION MOVES THE NEUTRAL PIECE TO THE CHOSEN TILE AND DELETES THE FORMER POSITION OF THE TILE
     for(int i=0;i<4;i++)
         for(int j=0;j<4;j++)
             if((y>tileSize*j+offset&&y<tileSize*(j+1)+offset)&&(x>tileSize*i+offset&&x<tileSize*(i+1)+offset))
@@ -328,7 +297,7 @@ void doNeutralMove(int GameBoard[4][4])
 }
 void selectMove(Point Move[4])
 {
-
+    //INITIALIZES THE MOVE
     for(int i=0;i<16;i++)
     { Move[i].x=-1;
       Move[i].y=-1;
@@ -336,22 +305,26 @@ void selectMove(Point Move[4])
 
     int x=-1,y=-1,counter=0;
     bool clicked=false;
-//CHECK IF LEFT MOUSE BUTTON IS CLICKED
-    while(!ismouseclick(WM_LBUTTONDOWN))
-    {clicked=true;
 
+    while(!ismouseclick(WM_LBUTTONDOWN))//CHECK IF LEFT MOUSE BUTTON IS CLICKED
+    {
+        clicked=true;
+        delay(1);//POLLING RATE OF 1000/SECOND
     }
 
     clearmouseclick(WM_LBUTTONUP);
-    while(clicked)
+    while(clicked)//THE INSTRUCTIONS IN THIS WHILE ARE EXECUTED ONLY WHEN THE LEFT MOUSE BUTTON IS BEING DELD PRESSED, NOT IF IT IS CLICKED
     {
 
         if(ismouseclick(WM_LBUTTONUP))
-        {clicked=false;cout<<"OUT";}
+        {
+            clicked=false;
+            delay(1);//POLLING RATE OF 1000/SECOND
+        }
 
         x=mousex();
-        y=mousey();
-
+        y=mousey();//THESE X AND Y CHANGE WHEN THE PLAYER MOVES THE CURSOR AND DON'T STAY FIXED TO THE VALUE OF THE FIRST CLICK
+        //THE FOLLOWING PART OF THE FUNCTION CHECKS IF THE MOUSE IS INSIDE OF ANY TILES AND SELECTS A TILE IF THE MOUSE PASSES OVER IT ADDING IT INTO THE MOVE ARRAY
         for(int i=0;i<4;i++)
         {
 
@@ -360,12 +333,12 @@ void selectMove(Point Move[4])
 
                 if((y>=tileSize*j+offset&&y<=tileSize*(j+1)+offset)&&(x>=tileSize*i+offset&&x<=tileSize*(i+1)+offset)&&checkIfMoveInList(Move,j,i))
                 {
-                    cout<<"Drew in block at "<<j<<' '<<i<<'\n';
                     Move[counter].x=j;
                     Move[counter].y=i;
 
                     setfillstyle(1,GREEN);
                     bar(tileSize*i+offset,tileSize*j+offset,tileSize*(i+1)+offset,tileSize*(j+1)+offset);
+                    rectangle(tileSize*i+offset,tileSize*j+offset,tileSize*(i+1)+offset,tileSize*(j+1)+offset);
                     counter++;
 
 

@@ -15,7 +15,7 @@ THE EMPTY TILES WILL BE MARKED BY 0
 */
 ///feat tudor hutu
 //GLOBAL VARIABLES
-Point selectedMove[4],neutralMoveFrom,neutralMoveTo;
+Point selectedMove[4];
 int GameBoard[4][4]={2, 0, -1, -1,
                      1, 0, 0, -1,
                      1, 0, 0, -1,
@@ -138,8 +138,9 @@ bool checkMoveValidity(Point Move[4])
 
 int remainingPossibleMoves()
 {
-    Point moveToBeChecked[4];
+    Point moveToBeChecked[4];//STORES THE MOVE THAT IS BEING CHECKED, IT CHANGES WITH EVERY ITERATION OF THE WHILE LOOP
     int possibleMoves=0;
+    //INSIDE THIS NESTED FOR LOOP ALL OF THE POSITIONS AN L PIECE COULD BE ARE CHECKED
 for(int j=0;j<4;j++)
     {for(int i=0;i<2;i++)
     {
@@ -225,21 +226,21 @@ int main()
 
 
     startGameWindow();
-    drawStartScreenStruct();
-    drawStartScreenStruct();
+    drawStartScreen();
+    drawStartScreen();
 
-    while(stage==0)
+    while(stage==0)//WAITS FOR PLAYER TO CHOOSE A BUTTON ON THE START MENU
        {
 
         selectMenuButton(stage);
-        delay(1);
+        delay(1);//POLLING RATE OF 1000/SECOND
        }
 
 
     //SOMETIMES HAVE TO CALL DRAWGAMEBOARD TWICE FOR THE DOUBLE BUFFER TO WORK.
     // NOT REALLY A PROBLEM SINCE IT DOESN'T TAKE THAT MUCH TIME TO RUN, BUT MAYBE MAKE A FUNCTION THAT CALLS IT TWICE SO THE CODE ISN'T AS MESSY
     if(stage==1){
-    while(remainingPossibleMoves())
+    while(remainingPossibleMoves())//
     {
 
 
@@ -254,9 +255,12 @@ int main()
     }
 
     makeMove(selectedMove);
+
     drawGameBoard(GameBoard);
     drawGameBoard(GameBoard);
+
     doNeutralMove(GameBoard);
+
     drawGameBoard(GameBoard);
     drawGameBoard(GameBoard);
 
@@ -272,30 +276,5 @@ int main()
     closegraph();
     }
 
-
-
-    /*
-    if(checkMoveValidity(selectedMove))
-        cout<<"VALID MOVE";
-    else cout<<"INVALID MOVE";
-
-    cout<<'\n';
-    for(int i=0;i<4;i++)
-    {   for(int j=0;j<4;j++)
-            cout<<GameBoard[i][j]<<' ';
-
-        cout<<'\n';
-    }
-    makeMove(selectedMove);
-    cout<<'\n';
-    for(int i=0;i<4;i++)
-    {   for(int j=0;j<4;j++)
-            cout<<GameBoard[i][j]<<' ';
-
-        cout<<'\n';
-    }
-
-*/
-    //TODO: CHECK MORE CORNER CASES AND MAKE SURE THE FUNCTION DOESN'T HAVE ANY BUGS
     return 0;
 }
