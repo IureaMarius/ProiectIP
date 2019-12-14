@@ -28,8 +28,8 @@ int windowWidth=getmaxwidth(),windowHeight=getmaxheight(); // THE MAXIMUM SIZE O
 int realWidth=windowWidth;// REAL WIDTH AND REAL HEIGHT ARE THE SIZE OF THE ACTUAL WINDOW.
 int offset=windowHeight/10;// A STANDARDIZED OFFSET USED TO ALGIGN UI BECAUSE IT WILL SCALE WELL WITH DIFFERENT RESOLUTIONS
 int realHeight=windowHeight*0.9f;
-
-
+Button mainMenuButton(0,0,0,0);
+extern int stage;
 int numberOfStartButtons=2;//NUMBERS IN THE START SCREEN
 //TILESIZE IS ONLY USED WHEN INTERACTING WITH THE TILES
 int tileSize=(realHeight-2*offset)/4,textSize1=20,textSize2=20,textSizeStart=20;//TEXT SIZE 1 AND 2 ARE FOR UI ELMENTS IN THE GAME AND TEXTSIZESTART IS FOR THE FONT IN THE START MENU
@@ -146,6 +146,12 @@ void drawGameBoard(int GameBoard[4][4])
     leftTurny+=2*offset;//PLACES THE REMAINING MOVES TEXT BELOW THE TURN TEXT
     rightTurny+=2*offset;
     Button remainingButton(leftTurnx,leftTurny,rightTurnx,rightTurny);
+    leftTurny+=2*offset;//PLACES THE REMAINING MOVES TEXT BELOW THE REMAINING TURNS TEXT
+    rightTurny+=2*offset;
+    mainMenuButton.leftCornerx=leftTurnx+textwidth("MAIN MENU")/2;
+    mainMenuButton.leftCornery=leftTurny;
+    mainMenuButton.rightCornerx=rightTurnx-textwidth("MAIN MENU")/2;
+    mainMenuButton.rightCornery=rightTurny;
 
     setvisualpage(1-page);//DOUBLE BUFFERING
     cleardevice();
@@ -226,6 +232,8 @@ void drawGameBoard(int GameBoard[4][4])
     setButtonText(remainingButton,remainingText);
     displayButton(remainingButton,false,WHITE,colour);
 
+    setButtonText(mainMenuButton,"MAIN MENU");
+    displayButton(mainMenuButton,true);
 
 
     page=1-page;//DOUBLE BUFFERING
@@ -263,7 +271,11 @@ void doNeutralMove(int GameBoard[4][4])
     }
     x=mousex();
     y=mousey();//X AND Y COORDONATES OF THE CLICK
-
+    if(isButtonClicked(mainMenuButton,x,y))
+    {
+        stage=0;
+        return;
+    }
     //THE FOLOWING NESTED FORS ERASE THE TILE THE USER WANTS TO MOVE
     for(int i=0;i<4;i++)
         for(int j=0;j<4;j++)
@@ -288,6 +300,11 @@ void doNeutralMove(int GameBoard[4][4])
     x=mousex();
     y=mousey();//X AND Y COORDONATES OF THE CLICK
     //THE FOLLOWING PART OF THE FUNCTION MOVES THE NEUTRAL PIECE TO THE CHOSEN TILE AND DELETES THE FORMER POSITION OF THE TILE
+    if(isButtonClicked(mainMenuButton,x,y))
+    {
+        stage=0;
+        return;
+    }
     for(int i=0;i<4;i++)
         for(int j=0;j<4;j++)
             if((y>tileSize*j+offset&&y<tileSize*(j+1)+offset)&&(x>tileSize*i+offset&&x<tileSize*(i+1)+offset))
@@ -302,7 +319,7 @@ void doNeutralMove(int GameBoard[4][4])
 
 
 }
-void selectMove(Point Move[4])
+void selectMove(Point Move[16])
 {
     //INITIALIZES THE MOVE
     for(int i=0;i<16;i++)
@@ -312,13 +329,19 @@ void selectMove(Point Move[4])
 
     int x=-1,y=-1,counter=0;
     bool clicked=false;
-
+    clearmouseclick(WM_LBUTTONDOWN);
     while(!ismouseclick(WM_LBUTTONDOWN))//CHECK IF LEFT MOUSE BUTTON IS CLICKED
     {
         clicked=true;
         delay(1);//POLLING RATE OF 1000/SECOND
     }
-
+    x=mousex();
+    y=mousey();
+    if(isButtonClicked(mainMenuButton,x,y))
+    {
+        stage=0;
+        return;
+    }
     clearmouseclick(WM_LBUTTONUP);
     while(clicked)//THE INSTRUCTIONS IN THIS WHILE ARE EXECUTED ONLY WHEN THE LEFT MOUSE BUTTON IS BEING DELD PRESSED, NOT IF IT IS CLICKED
     {

@@ -15,7 +15,8 @@ THE EMPTY TILES WILL BE MARKED BY 0
 */
 ///feat tudor hutu
 //GLOBAL VARIABLES
-Point selectedMove[4];
+Point selectedMove[16];
+int GameBoardInRow[16]={2, 0, -1, -1,1, 0, 0, -1,1, 0, 0, -1,1, 1, 0, 2};
 int GameBoard[4][4]={2, 0, -1, -1,
                      1, 0, 0, -1,
                      1, 0, 0, -1,
@@ -226,55 +227,93 @@ int main()
 
 
     startGameWindow();
-    drawStartScreen();
-    drawStartScreen();
+    while(stage!=-1)
+    {
+        drawStartScreen();
+        drawStartScreen();
+        currentPlayer=-1;
 
-    while(stage==0)//WAITS FOR PLAYER TO CHOOSE A BUTTON ON THE START MENU
-       {
+        for(int i=0;i<4;i++)
+        {
 
-        selectMenuButton(stage);
-        delay(1);//POLLING RATE OF 1000/SECOND
-       }
+            for(int j=0;j<4;j++)
+                {
+                    GameBoard[i][j]=GameBoardInRow[4*i+j];
+                    selectedMove[i*4+j].x=0;
+                    selectedMove[i*4+j].y=0;
+                }
+
+
+        }
+        while(stage==0)//WAITS FOR PLAYER TO CHOOSE A BUTTON ON THE START MENU
+           {
+                selectMenuButton(stage);
+                delay(1);//POLLING RATE OF 1000/SECOND
+           }
 
 
     //SOMETIMES HAVE TO CALL DRAWGAMEBOARD TWICE FOR THE DOUBLE BUFFER TO WORK.
     // NOT REALLY A PROBLEM SINCE IT DOESN'T TAKE THAT MUCH TIME TO RUN, BUT MAYBE MAKE A FUNCTION THAT CALLS IT TWICE SO THE CODE ISN'T AS MESSY
-    if(stage==1){
-    while(remainingPossibleMoves())//
-    {
+        if(stage==1)
+            {
+            while(remainingPossibleMoves())//
+                {
 
 
-    drawGameBoard(GameBoard);
-    drawGameBoard(GameBoard);
-    selectMove(selectedMove);
-    while(!checkMoveValidity(selectedMove))
-    {   drawGameBoard(GameBoard);
-        selectMove(selectedMove);
-        drawGameBoard(GameBoard);
+                    drawGameBoard(GameBoard);
+                    drawGameBoard(GameBoard);
+                        while(!checkMoveValidity(selectedMove)&&stage!=0)
+                            {
+                                drawGameBoard(GameBoard);
+                                selectMove(selectedMove);
+                                drawGameBoard(GameBoard);
 
+                            }
+                    if(stage==0)
+                        {
+                            break;
+                        }
+                    makeMove(selectedMove);
+
+                    drawGameBoard(GameBoard);
+                    drawGameBoard(GameBoard);
+
+                    doNeutralMove(GameBoard);
+                    if(stage==0)
+                        {
+                            break;
+                        }
+                    drawGameBoard(GameBoard);
+                    drawGameBoard(GameBoard);
+
+                    currentPlayer=-currentPlayer;
+
+        }
+
+                drawGameBoard(GameBoard);
+                drawGameBoard(GameBoard);
+                if(stage!=0)
+                    {
+                    clearmouseclick(WM_LBUTTONDOWN);
+                        int x,y;
+                        while(1)
+                        {
+                            delay(1);
+                            getmouseclick(WM_LBUTTONDOWN,x,y);
+                            if(isButtonClicked(mainMenuButton,x,y))
+                            {
+                                stage=0;
+                                break;
+                            }
+                        }
+                    }
+
+            }else if(stage==2)
+            {
+                closegraph();
+                stage=-1;
+            }
     }
-
-    makeMove(selectedMove);
-
-    drawGameBoard(GameBoard);
-    drawGameBoard(GameBoard);
-
-    doNeutralMove(GameBoard);
-
-    drawGameBoard(GameBoard);
-    drawGameBoard(GameBoard);
-
-    currentPlayer=-currentPlayer;
-
-    }
-
-    drawGameBoard(GameBoard);
-    drawGameBoard(GameBoard);
-
-    getch();
-    }else{
-    closegraph();
-    }
-
+    //getch();
     return 0;
 }
