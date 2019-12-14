@@ -4,8 +4,6 @@
 #include "main.cpp"
 #include <iostream>
 #include <cstdio>
-#include "nopop.h"
-
 
 using namespace std;
 
