@@ -227,8 +227,11 @@ int main()
 
 
     startGameWindow();
+drawGameBoard(GameBoard);
+        initMainMenuButton();
     while(stage!=-1)
     {
+
         drawStartScreen();
         drawStartScreen();
         currentPlayer=-1;

@@ -31,10 +31,23 @@ extern int stage;
 int numberOfStartButtons=2;//NUMBERS IN THE START SCREEN
 //TILESIZE IS ONLY USED WHEN INTERACTING WITH THE TILES
 int tileSize=(realHeight-2*offset)/4,textSize1=20,textSize2=20,textSizeStart=20;//TEXT SIZE 1 AND 2 ARE FOR UI ELMENTS IN THE GAME AND TEXTSIZESTART IS FOR THE FONT IN THE START MENU
-
+int textSizeMainMenu=20;
 int page=0;//VARIABLE USED FOR DOUBLE BUFFERING THE FRAMES
 Button titleButton(0,0,0,0);Button playButton(0,0,0,0);Button exitButton(0,0,0,0);//START MENU BUTTONS
 int remainingPossibleMoves();//DECLARED IN MAIN.CPP
+
+void initMainMenuButton()
+{
+    textSizeMainMenu=20;
+    settextstyle(DEFAULT_FONT,HORIZ_DIR,textSizeMainMenu);
+    while(textwidth(mainMenuButton.label)>=mainMenuButton.rightCornerx-mainMenuButton.leftCornerx||
+          textheight(mainMenuButton.label)>=mainMenuButton.rightCornery-mainMenuButton.leftCornery)
+    {
+        textSizeMainMenu-=1;
+        settextstyle(DEFAULT_FONT,HORIZ_DIR,textSizeMainMenu);
+    }
+
+}
 
 void setButtonText(Button& B,char text[100])
 {
@@ -50,11 +63,18 @@ void displayButton(Button B, bool border=true,int borderColour=WHITE,int textCol
     rectangle(B.leftCornerx,B.leftCornery,B.rightCornerx,B.rightCornery);
     }
     settextstyle(DEFAULT_FONT,HORIZ_DIR,textSizeStart);
-
+    if(B.leftCornerx!=mainMenuButton.leftCornerx)
+    {
     while(textwidth(B.label)>=B.rightCornerx-B.leftCornerx||textheight(B.label)>=B.rightCornery-B.leftCornery)
         {   textSizeStart-=0.1;
             settextstyle(DEFAULT_FONT,HORIZ_DIR,textSizeStart);
         }
+    }else
+    {
+        textSizeStart=textSizeMainMenu;
+        settextstyle(DEFAULT_FONT,HORIZ_DIR,textSizeStart);
+    }
+    cout<<B.label<<' '<<textSizeStart<<'\n';
     setcolor(textColour);
     outtextxy((B.leftCornerx+B.rightCornerx)/2-textwidth(B.label)/2,(B.leftCornery+B.rightCornery)/2-textheight(B.label)/2,B.label);
     setcolor(currentColour);
@@ -146,9 +166,9 @@ void drawGameBoard(int GameBoard[4][4])
     Button remainingButton(leftTurnx,leftTurny,rightTurnx,rightTurny);
     leftTurny+=2*offset;//PLACES THE REMAINING MOVES TEXT BELOW THE REMAINING TURNS TEXT
     rightTurny+=2*offset;
-    mainMenuButton.leftCornerx=leftTurnx+textwidth("MAIN MENU")/2;
+    mainMenuButton.leftCornerx=leftTurnx+offset;//textwidth("MAIN MENU")/2;
     mainMenuButton.leftCornery=leftTurny;
-    mainMenuButton.rightCornerx=rightTurnx-textwidth("MAIN MENU")/2;
+    mainMenuButton.rightCornerx=rightTurnx-offset;//textwidth("MAIN MENU")/2;
     mainMenuButton.rightCornery=rightTurny;
 
     setvisualpage(1-page);//DOUBLE BUFFERING
