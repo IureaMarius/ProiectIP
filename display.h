@@ -61,11 +61,8 @@ void displayButton(Button B, bool border=true,int borderColour=WHITE,int textCol
     outtextxy((B.leftCornerx+B.rightCornerx)/2-textwidth(B.label)/2,(B.leftCornery+B.rightCornery)/2-textheight(B.label)/2,B.label);
     setcolor(currentColour);
 }
-bool isButtonClicked(Button B)
+bool isButtonClicked(Button B,int x,int y)
 {
-    int x,y;
-    getmouseclicknopop(WM_LBUTTONDOWN,x,y);//FUNCTION DELCARED IN NOPOP, IT'S THE SAME FUCNTION AS GETMOUSECLICK BUT WITHOUT POPPING THE CLICK FROM THE QUEUE
-
     if(x>B.leftCornerx&&x<B.rightCornerx&&y>B.leftCornery&&y<B.rightCornery)
         return true;
     return false;
@@ -113,22 +110,32 @@ void startGameWindow()
     initwindow(realWidth,realHeight);
 }
 
+void clearClickQueue()
+{
+    int x,y;
+    while(x!=-1)
+    getmouseclick(WM_LBUTTONDOWN,x,y);
+}
 
 void selectMenuButton(int &stageSelect)
 {
+    int x,y;
+
     //CHECKS WHICH BUTTON YOU PRESSED IN THE START MENU AND CHANGES THE STAGE VARIABLE ACCORDINGLY
-    clearmouseclick(WM_LBUTTONDOWN);
+//    clearmouseclick(WM_LBUTTONDOWN);
+    clearClickQueue();
 
     while(!ismouseclick(WM_LBUTTONDOWN))
         delay(1);//THIS DELAY RESULTS IN A POLLING RATE OF 1000/SECOND, DON'T DELETE THIS LINE BECAUSE THE PROGRAM WILL USE THE PROCESSOR TOO MUCH
 
-    if(isButtonClicked(playButton))
+    getmouseclick(WM_LBUTTONDOWN,x,y);
+    if(isButtonClicked(playButton,x,y))
         stageSelect=1;
 
-    if(isButtonClicked(exitButton))
+    if(isButtonClicked(exitButton,x,y))
         stageSelect=2;
 
-    clearmouseclick(WM_LBUTTONDOWN);
+//    clearmouseclick(WM_LBUTTONDOWN);
 }
 void drawGameBoard(int GameBoard[4][4])
 {
