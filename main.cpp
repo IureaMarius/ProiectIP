@@ -18,13 +18,13 @@ THE EMPTY TILES WILL BE MARKED BY 0
 ///feat tudor hutu
 //GLOBAL VARIABLES
 Point selectedMove[16];
-int GameBoardInRow[16]={2, 0, -1, -1,1, 0, 0, -1,1, 0, 0, -1,1, 1, 0, 2};
-int GameBoard[4][4]={2, 0, -1, -1,
-                     1, 0, 0, -1,
-                     1, 0, 0, -1,
-                     1, 1, 0, 2};
+int GameBoardInRow[16]={2, -1, -1, 0,0, 1, -1, 0,0, 1, -1, 0,0, 1, 1, 2};
+int GameBoard[4][4]={2, -1, -1, 0,
+                     0, 1, -1, 0,
+                     0, 1, -1, 0,
+                     0, 1, 1, 2};
 int currentPlayer=-1,stage=0;
-bool firstPlayerCpu=false,secondPlayerCpu=true,madeCPUmove=false;
+bool firstPlayerCpu=true,secondPlayerCpu=true,madeCPUmove=false;
 
 
 
@@ -33,11 +33,11 @@ void makeMove(Point Move[4],int Board[4][4])
 {//DOESN'T CHECK IF THE MOVE IS VALID
     for(int i=0;i<4;i++)
         for(int j=0;j<4;j++)
-            if(GameBoard[i][j]==currentPlayer)
-                GameBoard[i][j]=0;
+            if(Board[i][j]==currentPlayer)
+                Board[i][j]=0;
     for(int i=0;i<4;i++)
     {
-        GameBoard[Move[i].x][Move[i].y]=currentPlayer;
+        Board[Move[i].x][Move[i].y]=currentPlayer;
     }
 }
 
@@ -89,8 +89,8 @@ int main()
                     madeCPUmove=false;
                         while(!checkMoveValidity(selectedMove,GameBoard,currentPlayer)&&stage!=0&&madeCPUmove==false)
                             {
-
-                                drawGameBoard(GameBoard);
+                                //cout<<madeCPUmove<<' '<<currentPlayer<<'\n';
+                                //drawGameBoard(GameBoard); //REMOVED IN ORDER TO FIX A DISPLAY BUG IN THE VSCPU FUNTIONS
                                 if(currentPlayer==-1)//CHECKS IF THE MOVE SHOULD BE MADE BY THE PLAYER OR BY THE CPU
                                 {
                                     if(firstPlayerCpu==false)
@@ -98,7 +98,9 @@ int main()
                                     else {
                                             delay(1000);
                                             doSmartMove(selectedMove);
+
                                             madeCPUmove=true;
+                                            break;
                                          }
                                 }else
                                 {
@@ -107,18 +109,21 @@ int main()
                                     else {
                                             delay(1000);
                                             doSmartMove(selectedMove);
+
                                             madeCPUmove=true;
+                                            break;
                                          }
                                 }
                                 drawGameBoard(GameBoard);
 
                             }
+                            drawGameBoard(GameBoard);
                     if(stage==0)
                         {
                             break;
                         }
                     makeMove(selectedMove,GameBoard);
-
+                    cout<<currentPlayer<<'\n';
                     drawGameBoard(GameBoard);
                     drawGameBoard(GameBoard);
 

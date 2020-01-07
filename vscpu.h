@@ -334,6 +334,7 @@ for(int j=0;j<4;j++)
                 bestMove=remainingPossibleMoves(VirtualBoard,-currentPlayer);
                 for(int k=0;k<4;k++)
                 {
+
                     Move[k].x=moveToBeChecked[k].x;
                     Move[k].y=moveToBeChecked[k].y;
                 }
@@ -378,12 +379,7 @@ for(int j=0;j<4;j++)
     }
 }
 
-for(int k=0;k<4;k++)
-                {
-                    cout<<Move[k].x<<'\n';
-                    cout<<Move[k].y<<'\n'<<'\n';
 
-                }
 
 }
 
