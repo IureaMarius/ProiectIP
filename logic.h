@@ -31,7 +31,7 @@ bool isAdjacentTo(Point A,Point B)
         return true;
     return false;
 }
-bool checkMoveValidity(Point Move[4])
+bool checkMoveValidity(Point Move[4],int Board[4][4],int currPlayer)
 {
     //CHECK IF THE POINTS DON'T GO OUTSIDE THE GAMEBOARD
     for(int i=0;i<4;i++)
@@ -102,9 +102,9 @@ bool checkMoveValidity(Point Move[4])
     //CHECK IF THE CELLS SELECTED ARE AVAILABLE
     int checkDuplicateMove=0;//ALSO CHECKING IF THE MOVE IS THE SAME AS THE ORIGINAL POSITION
     for(int i=0;i<4;i++)
-        {if(GameBoard[Move[i].x][Move[i].y]==-currentPlayer||GameBoard[Move[i].x][Move[i].y]==2)
+        {if(Board[Move[i].x][Move[i].y]==-currPlayer||Board[Move[i].x][Move[i].y]==2)
             return false;
-         if(GameBoard[Move[i].x][Move[i].y]==currentPlayer)
+         if(Board[Move[i].x][Move[i].y]==currPlayer)
             checkDuplicateMove++;
         }
     if(checkDuplicateMove==4)
@@ -114,7 +114,7 @@ bool checkMoveValidity(Point Move[4])
 }
 
 
-int remainingPossibleMoves()
+int remainingPossibleMoves(int Board[4][4],int currPlayer)
 {
     Point moveToBeChecked[4];//STORES THE MOVE THAT IS BEING CHECKED, IT CHANGES WITH EVERY ITERATION OF THE WHILE LOOP
     int possibleMoves=0;
@@ -133,22 +133,22 @@ for(int j=0;j<4;j++)
 
     moveToBeChecked[3].x=i;
     moveToBeChecked[3].y=j-1;
-    if(checkMoveValidity(moveToBeChecked))
+    if(checkMoveValidity(moveToBeChecked,Board,currPlayer))
         possibleMoves++;
 
     moveToBeChecked[3].x=i;
     moveToBeChecked[3].y=j+1;
-    if(checkMoveValidity(moveToBeChecked))
+    if(checkMoveValidity(moveToBeChecked,Board,currPlayer))
         possibleMoves++;
 
     moveToBeChecked[3].x=i+2;
     moveToBeChecked[3].y=j-1;
-    if(checkMoveValidity(moveToBeChecked))
+    if(checkMoveValidity(moveToBeChecked,Board,currPlayer))
         possibleMoves++;
 
     moveToBeChecked[3].x=i+2;
     moveToBeChecked[3].y=j+1;
-    if(checkMoveValidity(moveToBeChecked))
+    if(checkMoveValidity(moveToBeChecked,Board,currPlayer))
         possibleMoves++;
 
     moveToBeChecked[0].x=j;
@@ -162,22 +162,22 @@ for(int j=0;j<4;j++)
 
     moveToBeChecked[3].x=j-1;
     moveToBeChecked[3].y=i;
-    if(checkMoveValidity(moveToBeChecked))
+    if(checkMoveValidity(moveToBeChecked,Board,currPlayer))
         possibleMoves++;
 
     moveToBeChecked[3].x=j+1;
     moveToBeChecked[3].y=i;
-    if(checkMoveValidity(moveToBeChecked))
+    if(checkMoveValidity(moveToBeChecked,Board,currPlayer))
         possibleMoves++;
 
     moveToBeChecked[3].x=j-1;
     moveToBeChecked[3].y=i+2;
-    if(checkMoveValidity(moveToBeChecked))
+    if(checkMoveValidity(moveToBeChecked,Board,currPlayer))
         possibleMoves++;
 
     moveToBeChecked[3].x=j+1;
     moveToBeChecked[3].y=i+2;
-    if(checkMoveValidity(moveToBeChecked))
+    if(checkMoveValidity(moveToBeChecked,Board,currPlayer))
         possibleMoves++;
     }
 }

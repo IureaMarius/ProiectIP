@@ -34,7 +34,7 @@ int tileSize=(realHeight-2*offset)/4,textSize1=20,textSize2=20,textSizeStart=20;
 int textSizeMainMenu=20;
 int page=0;//VARIABLE USED FOR DOUBLE BUFFERING THE FRAMES
 Button titleButton(0,0,0,0);Button playButton(0,0,0,0);Button exitButton(0,0,0,0);//START MENU BUTTONS
-int remainingPossibleMoves();//DECLARED IN MAIN.CPP
+int remainingPossibleMoves(int Board[4][4],int currPlayer);//DECLARED IN LOGIC.CPP
 
 void initMainMenuButton()
 {
@@ -74,7 +74,7 @@ void displayButton(Button B, bool border=true,int borderColour=WHITE,int textCol
         textSizeStart=textSizeMainMenu;
         settextstyle(DEFAULT_FONT,HORIZ_DIR,textSizeStart);
     }
-    cout<<B.label<<' '<<textSizeStart<<'\n';
+
     setcolor(textColour);
     outtextxy((B.leftCornerx+B.rightCornerx)/2-textwidth(B.label)/2,(B.leftCornery+B.rightCornery)/2-textheight(B.label)/2,B.label);
     setcolor(currentColour);
@@ -204,7 +204,7 @@ void drawGameBoard(int GameBoard[4][4])
         }
     //THE NEXT PART OF THE FUNCTION DEALS WITH THE DISPLAYING OF TEXT AND IT'S SIZING IN RELATION TO THE RESOLUTION THE GAME IS PLAYED AT
     //THIS FIRST PART CHECKS WHO'S TURN IT IS OR IF SOMEONE WON
-    if(remainingPossibleMoves()!=0)
+    if(remainingPossibleMoves(GameBoard,currentPlayer)!=0)
         if(currentPlayer==1)
             {
                 setButtonText(turnButton,"BLUE'S TURN");
@@ -213,7 +213,7 @@ void drawGameBoard(int GameBoard[4][4])
                     setButtonText(turnButton,"RED'S TURN");
                  }
 
-    if(remainingPossibleMoves()==0)
+    if(remainingPossibleMoves(GameBoard,currentPlayer)==0)
         if(currentPlayer==1)
             {
                 setButtonText(turnButton,"RED WINS!");
@@ -243,7 +243,7 @@ void drawGameBoard(int GameBoard[4][4])
         colour=RED;
 
     displayButton(turnButton,false,WHITE,colour);
-    int remainingMoves=remainingPossibleMoves();
+    int remainingMoves=remainingPossibleMoves(GameBoard,currentPlayer);
 
     sprintf(remainingText,"REMAINING MOVES: %d",remainingMoves);//FILLS IN THE TEXT WITH THE ACTUAL VALUE OF THE REMAINING VALUES
 

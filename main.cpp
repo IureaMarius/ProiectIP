@@ -24,12 +24,12 @@ int GameBoard[4][4]={2, 0, -1, -1,
                      1, 0, 0, -1,
                      1, 1, 0, 2};
 int currentPlayer=-1,stage=0;
-bool firstPlayerCpu=true,secondPlayerCpu=true;
+bool firstPlayerCpu=false,secondPlayerCpu=true,madeCPUmove=false;
 
 
 
 
-void makeMove(Point Move[4])
+void makeMove(Point Move[4],int Board[4][4])
 {//DOESN'T CHECK IF THE MOVE IS VALID
     for(int i=0;i<4;i++)
         for(int j=0;j<4;j++)
@@ -80,25 +80,35 @@ int main()
     // NOT REALLY A PROBLEM SINCE IT DOESN'T TAKE THAT MUCH TIME TO RUN, BUT MAYBE MAKE A FUNCTION THAT CALLS IT TWICE SO THE CODE ISN'T AS MESSY
         if(stage==1)
             {
-            while(remainingPossibleMoves())//
+            while(remainingPossibleMoves(GameBoard,currentPlayer))//
                 {
 
 
                     drawGameBoard(GameBoard);
                     drawGameBoard(GameBoard);
-                        while(!checkMoveValidity(selectedMove)&&stage!=0)
+                    madeCPUmove=false;
+                        while(!checkMoveValidity(selectedMove,GameBoard,currentPlayer)&&stage!=0&&madeCPUmove==false)
                             {
+
                                 drawGameBoard(GameBoard);
                                 if(currentPlayer==-1)//CHECKS IF THE MOVE SHOULD BE MADE BY THE PLAYER OR BY THE CPU
                                 {
                                     if(firstPlayerCpu==false)
                                         selectMove(selectedMove);
-                                    else doStupidMove(selectedMove);
+                                    else {
+                                            delay(1000);
+                                            doSmartMove(selectedMove);
+                                            madeCPUmove=true;
+                                         }
                                 }else
                                 {
                                     if(secondPlayerCpu==false)
                                         selectMove(selectedMove);
-                                    else doStupidMove(selectedMove);
+                                    else {
+                                            delay(1000);
+                                            doSmartMove(selectedMove);
+                                            madeCPUmove=true;
+                                         }
                                 }
                                 drawGameBoard(GameBoard);
 
@@ -107,7 +117,7 @@ int main()
                         {
                             break;
                         }
-                    makeMove(selectedMove);
+                    makeMove(selectedMove,GameBoard);
 
                     drawGameBoard(GameBoard);
                     drawGameBoard(GameBoard);
@@ -116,12 +126,20 @@ int main()
                                 {
                                     if(firstPlayerCpu==false)
                                         doNeutralMove(GameBoard);
-                                    else doStupidNeutralMove(GameBoard);
+                                    else
+                                    {
+                                        delay(1000);
+                                        doSmartNeutralMove(GameBoard);
+                                    }
                                 }else
                                 {
                                     if(secondPlayerCpu==false)
                                         doNeutralMove(GameBoard);
-                                    else doStupidNeutralMove(GameBoard);
+                                    else
+                                    {
+                                        delay(1000);
+                                        doSmartNeutralMove(GameBoard);
+                                    }
                                 }
 
 
