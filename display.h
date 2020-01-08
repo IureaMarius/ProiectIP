@@ -489,7 +489,7 @@ void selectSettingsButton(int& CPU)
     int x,y;
 
     //CHECKS WHICH BUTTON YOU PRESSED IN THE START MENU AND CHANGES THE STAGE VARIABLE ACCORDINGLY
-//    clearmouseclick(WM_LBUTTONDOWN);
+
     clearClickQueue();
 
     while(!ismouseclick(WM_LBUTTONDOWN))
@@ -502,7 +502,7 @@ void selectSettingsButton(int& CPU)
     if(isButtonClicked(exitButton,x,y))
         CPU=2;
 
-//    clearmouseclick(WM_LBUTTONDOWN);
+
 }
 
 void selectDifficultyButton(int& difficulty)
@@ -510,7 +510,7 @@ void selectDifficultyButton(int& difficulty)
     int x,y;
 
     //CHECKS WHICH BUTTON YOU PRESSED IN THE START MENU AND CHANGES THE STAGE VARIABLE ACCORDINGLY
-//    clearmouseclick(WM_LBUTTONDOWN);
+
     clearClickQueue();
 
     while(!ismouseclick(WM_LBUTTONDOWN))
@@ -523,7 +523,7 @@ void selectDifficultyButton(int& difficulty)
     if(isButtonClicked(exitButton,x,y))
         difficulty=2;
 
-//    clearmouseclick(WM_LBUTTONDOWN);
+
 }
 
 

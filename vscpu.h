@@ -11,6 +11,7 @@ extern void makeMove(Point Move[4],int Board[4][4]);
 
 void copyBoard(int receiver[4][4],int sender[4][4])
 {
+    //THIS FUNCTION COPIES THE BOARD STATE FROM SENDER TO RECEIVER
     for(int i=0;i<4;i++)
     {
         for(int j=0;j<4;j++)
@@ -23,6 +24,7 @@ void copyBoard(int receiver[4][4],int sender[4][4])
 
 void doStupidMove(Point Move[4])
 {
+    //THIS FUNCTION FINDS THE FIRST VALID MOVE AND RETURNS IT
     delay(1000);
     Point moveToBeChecked[4];//STORES THE MOVE THAT IS BEING CHECKED, IT CHANGES WITH EVERY ITERATION OF THE WHILE LOOP
     //INSIDE THIS NESTED FOR LOOP ALL OF THE POSITIONS AN L PIECE COULD BE ARE CHECKED
@@ -47,7 +49,7 @@ for(int j=0;j<4;j++)
                     Move[k].x=moveToBeChecked[k].x;
                     Move[k].y=moveToBeChecked[k].y;
                 }
-                return;
+                return;// IF THE MOVE IS VALID THE FUNCTION ENDS AND STORES THE MOVE IN THE MOVE VARIABLE
         }
 
     moveToBeChecked[3].x=i;
@@ -151,6 +153,7 @@ for(int j=0;j<4;j++)
 
 void doStupidNeutralMove(int Board[4][4])
 {
+    //THIS FUNCTION FINDS THE FIRST NEUTRAL MOVE AND PERFORMS IT ON THE BOARD
     delay(1000);
     for(int i=0;i<4;i++)
         for(int j=0;j<4;j++)
@@ -176,6 +179,7 @@ void doStupidNeutralMove(int Board[4][4])
 
 void doSmartNeutralMove(int Board[4][4])
 {
+    //THIS FUNCTION CHECKS ALL POSSIBLE NEUTRAL MOVES AND DOES ONLY THE MOVE THAT LETS THE OTHER PLAYER WITH THE LEAST AMOUNT OF POSSIBLE MOVES
     int VirtualBoard[4][4],bestMove=INT_MAX,BestBoard[4][4];
 
 
@@ -207,6 +211,7 @@ void doSmartNeutralMove(int Board[4][4])
 
 void doSmartMove(Point Move[4])
 {
+    //THIS FUNCTION SIMULATES THE MOVES IT COULD MAKE AND CHOOSES THE ONE WHICH LEAVES THE ENEMY WITH THE LEAST AMOUNT OF MOVES
     int VirtualBoard[4][4],bestMove=INT_MAX;
 
     Point moveToBeChecked[4];//STORES THE MOVE THAT IS BEING CHECKED, IT CHANGES WITH EVERY ITERATION OF THE WHILE LOOP
@@ -226,12 +231,12 @@ for(int j=0;j<4;j++)
     moveToBeChecked[3].x=i;
     moveToBeChecked[3].y=j-1;
     if(checkMoveValidity(moveToBeChecked,GameBoard,currentPlayer))
-        {
-            copyBoard(VirtualBoard,GameBoard);
-            makeMove(moveToBeChecked,VirtualBoard);
-            doSmartNeutralMove(VirtualBoard);
+        {   //THIS IF IS THE SAME IN THE REST OF THE FUNTION
+            copyBoard(VirtualBoard,GameBoard);//SAVE CURRENT BOARD STATE IN THE VIRTUAL BOARD
+            makeMove(moveToBeChecked,VirtualBoard);//DO THE SELECTED MOVE
+            doSmartNeutralMove(VirtualBoard);//DO THE BEST POSSIBLE NEUTRAL MOVE
             if(remainingPossibleMoves(VirtualBoard,-currentPlayer)<bestMove)
-            {
+            {//CHECKS IF THIS IS THE BEST MOVE FOUND YET
                 bestMove=remainingPossibleMoves(VirtualBoard,-currentPlayer);
                 for(int k=0;k<4;k++)
                 {
