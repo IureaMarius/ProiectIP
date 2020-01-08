@@ -152,7 +152,7 @@ int main()
                             break;
                         }
                     makeMove(selectedMove,GameBoard);
-                    cout<<currentPlayer<<'\n';
+
                     drawGameBoard(GameBoard);
                     drawGameBoard(GameBoard);
 
