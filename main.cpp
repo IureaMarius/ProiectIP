@@ -23,8 +23,8 @@ int GameBoard[4][4]={2, -1, -1, 0,
                      0, 1, -1, 0,
                      0, 1, -1, 0,
                      0, 1, 1, 2};
-int currentPlayer=-1,stage=0;
-bool firstPlayerCpu=true,secondPlayerCpu=true,madeCPUmove=false;
+int currentPlayer=-1,stage=0,difficulty=0,selectedCPUButton=-1;
+bool firstPlayerCpu=false,secondPlayerCpu=false,madeCPUmove=false;
 
 
 
@@ -80,9 +80,32 @@ int main()
     // NOT REALLY A PROBLEM SINCE IT DOESN'T TAKE THAT MUCH TIME TO RUN, BUT MAYBE MAKE A FUNCTION THAT CALLS IT TWICE SO THE CODE ISN'T AS MESSY
         if(stage==1)
             {
+                difficulty=0;
+                secondPlayerCpu=false;
+                selectedCPUButton=-1;
+                drawSettingsScreen();
+                drawSettingsScreen();
+                    while(selectedCPUButton==-1)
+                    {
+                        selectSettingsButton(selectedCPUButton);
+                        delay(1);
+                    }
+                    if(selectedCPUButton==1)
+                        secondPlayerCpu=false;
+                    if(selectedCPUButton==2)
+                        secondPlayerCpu=true;
+                    if(secondPlayerCpu)
+                    {
+                        drawDifficultyScreen();
+                        drawDifficultyScreen();
+                        while(difficulty==0)
+                        {
+                            selectDifficultyButton(difficulty);
+                            delay(1);
+                        }
+                    }
             while(remainingPossibleMoves(GameBoard,currentPlayer))//
                 {
-
 
                     drawGameBoard(GameBoard);
                     drawGameBoard(GameBoard);
@@ -95,7 +118,10 @@ int main()
                                 {
                                     if(firstPlayerCpu==false)
                                         selectMove(selectedMove);
-                                    else {
+                                    else if(difficulty==1)
+                                        {
+                                            doStupidMove(selectedMove);
+                                        }else if(difficulty==2){
                                             delay(1000);
                                             doSmartMove(selectedMove);
 
@@ -106,7 +132,10 @@ int main()
                                 {
                                     if(secondPlayerCpu==false)
                                         selectMove(selectedMove);
-                                    else {
+                                    else if(difficulty==1)
+                                        {
+                                            doStupidMove(selectedMove);
+                                        }else if(difficulty==2){
                                             delay(1000);
                                             doSmartMove(selectedMove);
 

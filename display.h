@@ -200,6 +200,7 @@ void drawGameBoard(int GameBoard[4][4])
             if(GameBoard[j][i]==2)
             {   setfillstyle(1,WHITE);
                 bar(tileSize*i+offset,tileSize*j+offset,tileSize*(i+1)+offset,tileSize*(j+1)+offset);
+                rectangle(tileSize*i+offset,tileSize*j+offset,tileSize*(i+1)+offset,tileSize*(j+1)+offset);
             }
         }
     //THE NEXT PART OF THE FUNCTION DEALS WITH THE DISPLAYING OF TEXT AND IT'S SIZING IN RELATION TO THE RESOLUTION THE GAME IS PLAYED AT
@@ -410,6 +411,120 @@ void selectMove(Point Move[16])
 }
 
 
+void drawSettingsScreen()
+{
+    //CHANGE THESE 5 VARIABLES TO CHANGE THE WAY THE BUTTONS SHOW UP ON SCREEN
+    int buttonGap=(realHeight-3*offset)/numberOfStartButtons;
+    int titleLeftx=3*offset,titleLefty=offset,titleRightx=realWidth-3*offset,titleRighty=2*offset;
+    char titleText[100]="SETTINGS",playText[100]="PLAYER VS PLAYER",exitText[100]="PLAYER VS CPU";//CHANGE THE TEXT TO CHANGE THE TEXT IN THE START MENU BUTTONS
+
+    titleButton.leftCornerx=titleLeftx;
+    titleButton.leftCornery=titleLefty;
+    titleButton.rightCornerx=titleRightx;
+    titleButton.rightCornery=titleRighty;
+    setButtonText(titleButton,titleText);
+
+    playButton.leftCornerx=titleLeftx;
+    playButton.leftCornery=titleLefty+buttonGap;
+    playButton.rightCornerx=titleRightx;
+    playButton.rightCornery=titleRighty+buttonGap;
+    setButtonText(playButton,playText);
+
+    exitButton.leftCornerx=titleLeftx;
+    exitButton.leftCornery=titleLefty+2*buttonGap;
+    exitButton.rightCornerx=titleRightx;
+    exitButton.rightCornery=titleRighty+2*buttonGap;
+    setButtonText(exitButton,exitText);
+
+    setvisualpage(1-page);// DOUBLE BUFFERING
+    cleardevice();
+
+    displayButton(titleButton);
+    displayButton(playButton);
+    displayButton(exitButton);
+
+    page=1-page;//DOUBLE BUFFERING
+    setactivepage(page);
+
+}
+void drawDifficultyScreen()
+{
+    //CHANGE THESE 5 VARIABLES TO CHANGE THE WAY THE BUTTONS SHOW UP ON SCREEN
+    int buttonGap=(realHeight-3*offset)/numberOfStartButtons;
+    int titleLeftx=3*offset,titleLefty=offset,titleRightx=realWidth-3*offset,titleRighty=2*offset;
+    char titleText[100]="SELECT DIFFICULTY",playText[100]="EASY",exitText[100]="HARD";//CHANGE THE TEXT TO CHANGE THE TEXT IN THE START MENU BUTTONS
+
+    titleButton.leftCornerx=titleLeftx;
+    titleButton.leftCornery=titleLefty;
+    titleButton.rightCornerx=titleRightx;
+    titleButton.rightCornery=titleRighty;
+    setButtonText(titleButton,titleText);
+
+    playButton.leftCornerx=titleLeftx;
+    playButton.leftCornery=titleLefty+buttonGap;
+    playButton.rightCornerx=titleRightx;
+    playButton.rightCornery=titleRighty+buttonGap;
+    setButtonText(playButton,playText);
+
+    exitButton.leftCornerx=titleLeftx;
+    exitButton.leftCornery=titleLefty+2*buttonGap;
+    exitButton.rightCornerx=titleRightx;
+    exitButton.rightCornery=titleRighty+2*buttonGap;
+    setButtonText(exitButton,exitText);
+
+    setvisualpage(1-page);// DOUBLE BUFFERING
+    cleardevice();
+
+    displayButton(titleButton);
+    displayButton(playButton);
+    displayButton(exitButton);
+
+    page=1-page;//DOUBLE BUFFERING
+    setactivepage(page);
+
+}
+
+void selectSettingsButton(int& CPU)
+{
+    int x,y;
+
+    //CHECKS WHICH BUTTON YOU PRESSED IN THE START MENU AND CHANGES THE STAGE VARIABLE ACCORDINGLY
+//    clearmouseclick(WM_LBUTTONDOWN);
+    clearClickQueue();
+
+    while(!ismouseclick(WM_LBUTTONDOWN))
+        delay(1);//THIS DELAY RESULTS IN A POLLING RATE OF 1000/SECOND, DON'T DELETE THIS LINE BECAUSE THE PROGRAM WILL USE THE PROCESSOR TOO MUCH
+
+    getmouseclick(WM_LBUTTONDOWN,x,y);
+    if(isButtonClicked(playButton,x,y))
+        CPU=1;
+
+    if(isButtonClicked(exitButton,x,y))
+        CPU=2;
+
+//    clearmouseclick(WM_LBUTTONDOWN);
+}
+
+void selectDifficultyButton(int& difficulty)
+{
+    int x,y;
+
+    //CHECKS WHICH BUTTON YOU PRESSED IN THE START MENU AND CHANGES THE STAGE VARIABLE ACCORDINGLY
+//    clearmouseclick(WM_LBUTTONDOWN);
+    clearClickQueue();
+
+    while(!ismouseclick(WM_LBUTTONDOWN))
+        delay(1);//THIS DELAY RESULTS IN A POLLING RATE OF 1000/SECOND, DON'T DELETE THIS LINE BECAUSE THE PROGRAM WILL USE THE PROCESSOR TOO MUCH
+
+    getmouseclick(WM_LBUTTONDOWN,x,y);
+    if(isButtonClicked(playButton,x,y))
+        difficulty=1;
+
+    if(isButtonClicked(exitButton,x,y))
+        difficulty=2;
+
+//    clearmouseclick(WM_LBUTTONDOWN);
+}
 
 
 
