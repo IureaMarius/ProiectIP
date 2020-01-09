@@ -24,13 +24,14 @@ int GameBoard[4][4]={2, -1, -1, 0,
                      0, 1, -1, 0,
                      0, 1, 1, 2};
 int currentPlayer=-1,stage=0,difficulty=0,selectedCPUButton=-1;
-bool firstPlayerCpu=false,secondPlayerCpu=false,madeCPUmove=false;
-
+bool firstPlayerCpu=false,secondPlayerCpu=false,madeCPUmove=false,undoHasBeenPressed=false;;
+BoardHistoryNode* head=NULL;
 
 
 
 void makeMove(Point Move[4],int Board[4][4])
 {//DOESN'T CHECK IF THE MOVE IS VALID
+    if(secondPlayerCpu==false||currentPlayer==-1)addBoardToHistory(GameBoard,head,currentPlayer);
     for(int i=0;i<4;i++)
         for(int j=0;j<4;j++)
             if(Board[i][j]==currentPlayer)
@@ -56,6 +57,8 @@ int main()
         drawStartScreen();
         drawStartScreen();
         currentPlayer=-1;
+        while(head!=NULL)
+            deleteBoardFromHistory(head);
 
         for(int i=0;i<4;i++)
         {
@@ -66,7 +69,6 @@ int main()
                     selectedMove[i*4+j].x=0;
                     selectedMove[i*4+j].y=0;
                 }
-
 
         }
         while(stage==0)//WAITS FOR PLAYER TO CHOOSE A BUTTON ON THE START MENU
@@ -110,9 +112,9 @@ int main()
                     drawGameBoard(GameBoard);
                     drawGameBoard(GameBoard);
                     madeCPUmove=false;
-                        while(!checkMoveValidity(selectedMove,GameBoard,currentPlayer)&&stage!=0&&madeCPUmove==false)
+                        while(!checkMoveValidity(selectedMove,GameBoard,currentPlayer)&&stage!=0&&madeCPUmove==false&&undoHasBeenPressed==false)
                             {
-                                //cout<<madeCPUmove<<' '<<currentPlayer<<'\n';
+ redoMove:
                                 //drawGameBoard(GameBoard); //REMOVED IN ORDER TO FIX A DISPLAY BUG IN THE VSCPU FUNTIONS
                                 if(currentPlayer==-1)//CHECKS IF THE MOVE SHOULD BE MADE BY THE PLAYER OR BY THE CPU
                                 {
@@ -151,10 +153,25 @@ int main()
                         {
                             break;
                         }
+                    if(undoHasBeenPressed)
+                        {
+
+                        copyBoard(GameBoard,head->Board);
+                        currentPlayer=head->Player;
+                        deleteBoardFromHistory(head);
+                        undoHasBeenPressed=false;
+                        drawGameBoard(GameBoard);
+                        drawGameBoard(GameBoard);
+                        clearmouseclick(WM_LBUTTONDOWN);
+                        goto redoNeutralMove;
+                        }
+                    //addBoardToHistory(GameBoard,head,currentPlayer);
                     makeMove(selectedMove,GameBoard);
 
                     drawGameBoard(GameBoard);
                     drawGameBoard(GameBoard);
+                    //addBoardToHistory(GameBoard,head,currentPlayer);
+redoNeutralMove:
 
                     if(currentPlayer==-1)//CHECKS IF THE MOVE SHOULD BE MADE BY THE PLAYER OR BY THE CPU
                                 {
@@ -183,9 +200,20 @@ int main()
                         {
                             break;
                         }
+                    if(undoHasBeenPressed)
+                        {
+                        copyBoard(GameBoard,head->Board);
+                        currentPlayer=head->Player;
+                        deleteBoardFromHistory(head);
+                        undoHasBeenPressed=false;
+                        drawGameBoard(GameBoard);
+                        drawGameBoard(GameBoard);
+                        clearmouseclick(WM_LBUTTONDOWN);
+                        goto redoMove;
+                        }
                     drawGameBoard(GameBoard);
                     drawGameBoard(GameBoard);
-
+                    //addBoardToHistory(GameBoard,head,currentPlayer);
                     currentPlayer=-currentPlayer;
 
         }
@@ -204,6 +232,17 @@ int main()
                             {
                                 stage=0;
                                 break;
+                            }
+                            if(isButtonClicked(undoMoveButton,x,y))
+                            {
+                                copyBoard(GameBoard,head->Board);
+                                currentPlayer=head->Player;
+                                deleteBoardFromHistory(head);
+                                undoHasBeenPressed=false;
+                                drawGameBoard(GameBoard);
+                                drawGameBoard(GameBoard);
+                                clearmouseclick(WM_LBUTTONDOWN);
+                                goto redoNeutralMove;
                             }
                         }
                     }

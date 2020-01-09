@@ -1,7 +1,62 @@
 #pragma once
 #include <iostream>
+#include "display.h"
 using namespace std;
  extern int GameBoard[4][4];
+
+struct Point{
+    int x;
+    int y;
+};
+
+struct BoardHistoryNode{
+    int Board[4][4];
+    int Player;
+    BoardHistoryNode* previous;
+};
+
+void copyBoard(int receiver[4][4],int sender[4][4])
+{
+    //THIS FUNCTION COPIES THE BOARD STATE FROM SENDER TO RECEIVER
+    for(int i=0;i<4;i++)
+    {
+        for(int j=0;j<4;j++)
+        {
+            receiver[i][j]=sender[i][j];
+        }
+    }
+}
+
+void addBoardToHistory(int Board[4][4],BoardHistoryNode* &head,int Player)
+{
+    if(head!=NULL)
+    {
+        bool differentFromLastBoard=false;
+        for(int i=0;i<4;i++)
+            for(int j=0;j<4;j++)
+            if(Board[i][j]!=head->Board[i][j])
+                differentFromLastBoard=true;
+        if(differentFromLastBoard==false)
+            return;
+    }
+    BoardHistoryNode* Node=new BoardHistoryNode;
+    copyBoard(Node->Board,GameBoard);
+    Node->Player=Player;
+    Node->previous=head;
+    head=Node;
+}
+void deleteBoardFromHistory(BoardHistoryNode* &head)
+{
+    BoardHistoryNode* toDelete;
+    toDelete=head;
+    head=head->previous;
+    delete toDelete;
+}
+void loadLastBoard(int Board[4][4],int &Player,BoardHistoryNode* head)
+{
+    copyBoard(Board,head->Board);
+    Player=head->Player;
+}
 bool checkPointBounds(Point A)
 {
     if(A.x<4&&A.x>=0&&A.y<4&&A.y>=0)

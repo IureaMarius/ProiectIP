@@ -9,17 +9,7 @@ using namespace std;
 
 extern void makeMove(Point Move[4],int Board[4][4]);
 
-void copyBoard(int receiver[4][4],int sender[4][4])
-{
-    //THIS FUNCTION COPIES THE BOARD STATE FROM SENDER TO RECEIVER
-    for(int i=0;i<4;i++)
-    {
-        for(int j=0;j<4;j++)
-        {
-            receiver[i][j]=sender[i][j];
-        }
-    }
-}
+
 
 
 void doStupidMove(Point Move[4])

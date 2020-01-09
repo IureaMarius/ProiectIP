@@ -4,6 +4,7 @@
 #include "main.cpp"
 #include <iostream>
 #include <cstdio>
+#include "logic.h"
 
 using namespace std;
 
@@ -14,10 +15,8 @@ Button(int leftx,int lefty, int rightx, int righty):leftCornerx(leftx),leftCorne
 };
 
 extern int currentPlayer;
-struct Point{
-    int x;
-    int y;
-};
+
+
 //VALUES OPEN TO CHANGE IN ORDER TO BETTER FIT THE UI IN THE WINDOW
 int windowWidth=getmaxwidth(),windowHeight=getmaxheight(); // THE MAXIMUM SIZE OF THE SCREEN
 
@@ -26,12 +25,14 @@ int windowWidth=getmaxwidth(),windowHeight=getmaxheight(); // THE MAXIMUM SIZE O
 int realWidth=windowWidth;// REAL WIDTH AND REAL HEIGHT ARE THE SIZE OF THE ACTUAL WINDOW.
 int offset=windowHeight/10;// A STANDARDIZED OFFSET USED TO ALGIGN UI BECAUSE IT WILL SCALE WELL WITH DIFFERENT RESOLUTIONS
 int realHeight=windowHeight*0.9f;
-Button mainMenuButton(0,0,0,0);
+Button mainMenuButton(0,0,0,0);Button undoMoveButton(0,0,0,0);
 extern int stage;
+extern bool undoHasBeenPressed;
+extern BoardHistoryNode* head;
 int numberOfStartButtons=2;//NUMBERS IN THE START SCREEN
 //TILESIZE IS ONLY USED WHEN INTERACTING WITH THE TILES
 int tileSize=(realHeight-2*offset)/4,textSize1=20,textSize2=20,textSizeStart=20;//TEXT SIZE 1 AND 2 ARE FOR UI ELMENTS IN THE GAME AND TEXTSIZESTART IS FOR THE FONT IN THE START MENU
-int textSizeMainMenu=20;
+int textSizeMainMenu=20,textSizeUndo=20;
 int page=0;//VARIABLE USED FOR DOUBLE BUFFERING THE FRAMES
 Button titleButton(0,0,0,0);Button playButton(0,0,0,0);Button exitButton(0,0,0,0);//START MENU BUTTONS
 int remainingPossibleMoves(int Board[4][4],int currPlayer);//DECLARED IN LOGIC.CPP
@@ -39,12 +40,20 @@ int remainingPossibleMoves(int Board[4][4],int currPlayer);//DECLARED IN LOGIC.C
 void initMainMenuButton()
 {
     textSizeMainMenu=20;
+    textSizeUndo=20;
     settextstyle(DEFAULT_FONT,HORIZ_DIR,textSizeMainMenu);
     while(textwidth(mainMenuButton.label)>=mainMenuButton.rightCornerx-mainMenuButton.leftCornerx||
           textheight(mainMenuButton.label)>=mainMenuButton.rightCornery-mainMenuButton.leftCornery)
     {
         textSizeMainMenu-=1;
         settextstyle(DEFAULT_FONT,HORIZ_DIR,textSizeMainMenu);
+    }
+    settextstyle(DEFAULT_FONT,HORIZ_DIR,textSizeUndo);
+    while(textwidth(undoMoveButton.label)>=undoMoveButton.rightCornerx-undoMoveButton.leftCornerx||
+          textheight(undoMoveButton.label)>=undoMoveButton.rightCornery-undoMoveButton.leftCornery)
+    {
+        textSizeUndo-=1;
+        settextstyle(DEFAULT_FONT,HORIZ_DIR,textSizeUndo);
     }
 
 }
@@ -63,7 +72,7 @@ void displayButton(Button B, bool border=true,int borderColour=WHITE,int textCol
     rectangle(B.leftCornerx,B.leftCornery,B.rightCornerx,B.rightCornery);
     }
     settextstyle(DEFAULT_FONT,HORIZ_DIR,textSizeStart);
-    if(B.leftCornerx!=mainMenuButton.leftCornerx)
+    if(B.leftCornerx!=mainMenuButton.leftCornerx&&B.leftCornerx!=undoMoveButton.leftCornerx)
     {
     while(textwidth(B.label)>=B.rightCornerx-B.leftCornerx||textheight(B.label)>=B.rightCornery-B.leftCornery)
         {   textSizeStart-=0.1;
@@ -71,8 +80,16 @@ void displayButton(Button B, bool border=true,int borderColour=WHITE,int textCol
         }
     }else
     {
-        textSizeStart=textSizeMainMenu;
-        settextstyle(DEFAULT_FONT,HORIZ_DIR,textSizeStart);
+        if(B.leftCornery==mainMenuButton.leftCornerx)
+        {
+            textSizeStart=textSizeMainMenu;
+            settextstyle(DEFAULT_FONT,HORIZ_DIR,textSizeStart);
+        }
+        if(B.leftCornery==undoMoveButton.leftCornerx)
+        {
+            textSizeStart=textSizeUndo;
+            settextstyle(DEFAULT_FONT,HORIZ_DIR,textSizeStart);
+        }
     }
 
     setcolor(textColour);
@@ -171,6 +188,14 @@ void drawGameBoard(int GameBoard[4][4])
     mainMenuButton.rightCornerx=rightTurnx-offset;//textwidth("MAIN MENU")/2;
     mainMenuButton.rightCornery=rightTurny;
 
+    leftTurny-=6*offset;
+    rightTurny-=6*offset;
+
+    undoMoveButton.leftCornerx=leftTurnx+offset;
+    undoMoveButton.leftCornery=leftTurny;
+    undoMoveButton.rightCornerx=rightTurnx-offset;
+    undoMoveButton.rightCornery=rightTurny;
+
     setvisualpage(1-page);//DOUBLE BUFFERING
     cleardevice();
     //CHECK ALL TITLES AND COLOR THEM ACCORDINGLY:
@@ -254,6 +279,8 @@ void drawGameBoard(int GameBoard[4][4])
     setButtonText(mainMenuButton,"MAIN MENU");
     displayButton(mainMenuButton,true);
 
+    setButtonText(undoMoveButton,"UNDO");
+    displayButton(undoMoveButton,true);
 
     page=1-page;//DOUBLE BUFFERING
     setactivepage(page);
@@ -295,6 +322,12 @@ void doNeutralMove(int GameBoard[4][4])
         stage=0;
         return;
     }
+    if(isButtonClicked(undoMoveButton,x,y)&&head!=NULL)
+    {
+        undoHasBeenPressed=true;
+        return;
+    }
+    addBoardToHistory(GameBoard,head,currentPlayer);
     //THE FOLOWING NESTED FORS ERASE THE TILE THE USER WANTS TO MOVE
     for(int i=0;i<4;i++)
         for(int j=0;j<4;j++)
@@ -322,6 +355,11 @@ void doNeutralMove(int GameBoard[4][4])
     if(isButtonClicked(mainMenuButton,x,y))
     {
         stage=0;
+        return;
+    }
+    if(isButtonClicked(undoMoveButton,x,y))
+    {
+        undoHasBeenPressed=true;
         return;
     }
     for(int i=0;i<4;i++)
@@ -361,6 +399,12 @@ void selectMove(Point Move[16])
         stage=0;
         return;
     }
+    if(isButtonClicked(undoMoveButton,x,y)&&head!=NULL)
+    {
+        undoHasBeenPressed=true;
+        return;
+    }
+    //addBoardToHistory(GameBoard,head,currentPlayer);
     clearmouseclick(WM_LBUTTONUP);
     while(clicked)//THE INSTRUCTIONS IN THIS WHILE ARE EXECUTED ONLY WHEN THE LEFT MOUSE BUTTON IS BEING DELD PRESSED, NOT IF IT IS CLICKED
     {
