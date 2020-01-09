@@ -72,7 +72,7 @@ void displayButton(Button B, bool border=true,int borderColour=WHITE,int textCol
     rectangle(B.leftCornerx,B.leftCornery,B.rightCornerx,B.rightCornery);
     }
     settextstyle(DEFAULT_FONT,HORIZ_DIR,textSizeStart);
-    if(B.leftCornerx!=mainMenuButton.leftCornerx&&B.leftCornerx!=undoMoveButton.leftCornerx)
+    if(B.leftCornerx!=mainMenuButton.leftCornerx||B.leftCornerx!=undoMoveButton.leftCornerx)
     {
     while(textwidth(B.label)>=B.rightCornerx-B.leftCornerx||textheight(B.label)>=B.rightCornery-B.leftCornery)
         {   textSizeStart-=0.1;
@@ -80,12 +80,12 @@ void displayButton(Button B, bool border=true,int borderColour=WHITE,int textCol
         }
     }else
     {
-        if(B.leftCornery==mainMenuButton.leftCornerx)
+        if(B.leftCornery==mainMenuButton.leftCornery)
         {
             textSizeStart=textSizeMainMenu;
             settextstyle(DEFAULT_FONT,HORIZ_DIR,textSizeStart);
         }
-        if(B.leftCornery==undoMoveButton.leftCornerx)
+        if(B.leftCornery==undoMoveButton.leftCornery)
         {
             textSizeStart=textSizeUndo;
             settextstyle(DEFAULT_FONT,HORIZ_DIR,textSizeStart);
