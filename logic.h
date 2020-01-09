@@ -29,7 +29,7 @@ void copyBoard(int receiver[4][4],int sender[4][4])
 
 void addBoardToHistory(int Board[4][4],BoardHistoryNode* &head,int Player)
 {
-    cout<<moveCounter<<'\n';
+
     if(head!=NULL)
     {
         bool differentFromLastBoard=false;
@@ -49,7 +49,7 @@ void addBoardToHistory(int Board[4][4],BoardHistoryNode* &head,int Player)
 }
 void deleteBoardFromHistory(BoardHistoryNode* &head)
 {
-    cout<<moveCounter<<'\n';
+
     BoardHistoryNode* toDelete;
     toDelete=head;
     head=head->previous;
