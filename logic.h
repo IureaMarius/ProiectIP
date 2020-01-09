@@ -2,7 +2,7 @@
 #include <iostream>
 #include "display.h"
 using namespace std;
- extern int GameBoard[4][4];
+ extern int GameBoard[4][4],moveCounter;
 
 struct Point{
     int x;
@@ -29,6 +29,7 @@ void copyBoard(int receiver[4][4],int sender[4][4])
 
 void addBoardToHistory(int Board[4][4],BoardHistoryNode* &head,int Player)
 {
+    cout<<moveCounter<<'\n';
     if(head!=NULL)
     {
         bool differentFromLastBoard=false;
@@ -39,6 +40,7 @@ void addBoardToHistory(int Board[4][4],BoardHistoryNode* &head,int Player)
         if(differentFromLastBoard==false)
             return;
     }
+    moveCounter++;
     BoardHistoryNode* Node=new BoardHistoryNode;
     copyBoard(Node->Board,GameBoard);
     Node->Player=Player;
@@ -47,10 +49,12 @@ void addBoardToHistory(int Board[4][4],BoardHistoryNode* &head,int Player)
 }
 void deleteBoardFromHistory(BoardHistoryNode* &head)
 {
+    cout<<moveCounter<<'\n';
     BoardHistoryNode* toDelete;
     toDelete=head;
     head=head->previous;
     delete toDelete;
+    moveCounter--;
 }
 void loadLastBoard(int Board[4][4],int &Player,BoardHistoryNode* head)
 {

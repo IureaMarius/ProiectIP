@@ -23,7 +23,7 @@ int GameBoard[4][4]={2, -1, -1, 0,
                      0, 1, -1, 0,
                      0, 1, -1, 0,
                      0, 1, 1, 2};
-int currentPlayer=-1,stage=0,difficulty=0,selectedCPUButton=-1;
+int currentPlayer=-1,stage=0,difficulty=0,selectedCPUButton=-1,moveCounter=0;
 bool firstPlayerCpu=false,secondPlayerCpu=false,madeCPUmove=false,undoHasBeenPressed=false;;
 BoardHistoryNode* head=NULL;
 
@@ -153,7 +153,7 @@ int main()
                         {
                             break;
                         }
-                    if(undoHasBeenPressed)
+                    if(undoHasBeenPressed&&moveCounter!=0)
                         {
 
                         copyBoard(GameBoard,head->Board);
@@ -166,7 +166,8 @@ int main()
                         goto redoNeutralMove;
                         }
                     //addBoardToHistory(GameBoard,head,currentPlayer);
-                    makeMove(selectedMove,GameBoard);
+                    if(checkMoveValidity(selectedMove,GameBoard,currentPlayer))
+                        makeMove(selectedMove,GameBoard);
 
                     drawGameBoard(GameBoard);
                     drawGameBoard(GameBoard);
@@ -200,7 +201,7 @@ redoNeutralMove:
                         {
                             break;
                         }
-                    if(undoHasBeenPressed)
+                    if(undoHasBeenPressed&&moveCounter!=0)
                         {
                         copyBoard(GameBoard,head->Board);
                         currentPlayer=head->Player;
@@ -235,6 +236,7 @@ redoNeutralMove:
                             }
                             if(isButtonClicked(undoMoveButton,x,y))
                             {
+                                madeCPUmove=false;
                                 copyBoard(GameBoard,head->Board);
                                 currentPlayer=head->Player;
                                 deleteBoardFromHistory(head);

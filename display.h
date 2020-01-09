@@ -322,12 +322,12 @@ void doNeutralMove(int GameBoard[4][4])
         stage=0;
         return;
     }
-    if(isButtonClicked(undoMoveButton,x,y)&&head!=NULL)
+    if(isButtonClicked(undoMoveButton,x,y)&&moveCounter!=0)
     {
         undoHasBeenPressed=true;
         return;
     }
-    addBoardToHistory(GameBoard,head,currentPlayer);
+
     //THE FOLOWING NESTED FORS ERASE THE TILE THE USER WANTS TO MOVE
     for(int i=0;i<4;i++)
         for(int j=0;j<4;j++)
@@ -357,11 +357,12 @@ void doNeutralMove(int GameBoard[4][4])
         stage=0;
         return;
     }
-    if(isButtonClicked(undoMoveButton,x,y))
+    if(isButtonClicked(undoMoveButton,x,y)&&moveCounter!=0)
     {
         undoHasBeenPressed=true;
         return;
     }
+    addBoardToHistory(GameBoard,head,currentPlayer);
     for(int i=0;i<4;i++)
         for(int j=0;j<4;j++)
             if((y>tileSize*j+offset&&y<tileSize*(j+1)+offset)&&(x>tileSize*i+offset&&x<tileSize*(i+1)+offset))
@@ -399,7 +400,7 @@ void selectMove(Point Move[16])
         stage=0;
         return;
     }
-    if(isButtonClicked(undoMoveButton,x,y)&&head!=NULL)
+    if(isButtonClicked(undoMoveButton,x,y)&&moveCounter!=0)
     {
         undoHasBeenPressed=true;
         return;
