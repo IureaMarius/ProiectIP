@@ -5,7 +5,8 @@
 #include <iostream>
 #include <cstdio>
 #include "logic.h"
-
+#include <Windows.h>
+#include <MMSystem.h>
 using namespace std;
 
 struct Button{

@@ -51,6 +51,7 @@ int main()
     startGameWindow();
     drawGameBoard(GameBoard);
     initMainMenuButton();
+    PlaySound("muzica.wav",NULL,SND_FILENAME|SND_LOOP|SND_ASYNC);
     while(stage!=-1)
     {
 
