@@ -29,17 +29,6 @@ void copyBoard(int receiver[4][4],int sender[4][4])
 
 void addBoardToHistory(int Board[4][4],BoardHistoryNode* &head,int Player)
 {
-
-    if(head!=NULL)
-    {
-        bool differentFromLastBoard=false;
-        for(int i=0;i<4;i++)
-            for(int j=0;j<4;j++)
-            if(Board[i][j]!=head->Board[i][j])
-                differentFromLastBoard=true;
-        if(differentFromLastBoard==false)
-            return;
-    }
     moveCounter++;
     BoardHistoryNode* Node=new BoardHistoryNode;
     copyBoard(Node->Board,GameBoard);
