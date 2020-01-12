@@ -6,6 +6,7 @@
 #include <cstdio>
 #include "vscpu.h"
 #include "logic.h"
+#include "resource.h"
 using namespace std;
 /*
 PLAYER 1 IS RED AND PLAYER 2 IS BLUE,
@@ -71,7 +72,7 @@ int main()
     startGameWindow();
     drawGameBoard(GameBoard);
     initMainMenuButton();
-    PlaySound("muzica.wav",NULL,SND_FILENAME|SND_LOOP|SND_ASYNC);
+    PlaySound(MAKEINTRESOURCE(IDR_SOUND),GetModuleHandle(NULL),SND_RESOURCE|SND_LOOP|SND_ASYNC);
 
     while(stage!=-1)
     {
